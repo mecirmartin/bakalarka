@@ -1,13 +1,11 @@
 import * as SRD from "@projectstorm/react-diagrams"
 
-import { EntityTypeNodeFactory } from "./nodes/entity-type/EntityTypeFactory"
-import { WeakEntityTypeNodeFactory } from "./nodes/weak-entity-type/WeakEntityTypeFactory"
-import { EntityTypeModel } from "./nodes/entity-type/EntityTypeModel"
-import { RelationshipTypeNodeFactory } from "./nodes/relationship-type/RelationshipTypeFactory"
-import { IdentificationRelationshipTypeNodeFactory } from "./nodes/identification-relationship-type/IdentificationRelationshipTypeFactory"
+import { EntityNodeFactory } from "./nodes/entity/EntityFactory"
+import { EntityModel } from "./nodes/entity/EntityModel"
+import { RelationshipNodeFactory } from "./nodes/relationship/RelationshipFactory"
 import { AttributeNodeFactory } from "./nodes/attribute/AttributeFactory"
-import { MultipleValueAttributeNodeFactory } from "./nodes/multiple-value-attribute/MultipleValueAttributeFactory"
-import { DerivedAttributeNodeFactory } from "./nodes/derived-attribute/DerivedAttributeFactory"
+import { AdvancedLinkFactory } from "./links/custom-link/AdvancedLinkFactory"
+import { AdvancedLinkModel } from "./links/custom-link/AdvancedLinkMode"
 
 export class Application {
   protected activeModel: SRD.DiagramModel
@@ -19,20 +17,23 @@ export class Application {
     this.newModel()
     // Register factory
     const factoriesManager = this.diagramEngine.getNodeFactories()
-    factoriesManager.registerFactory(new EntityTypeNodeFactory())
-    factoriesManager.registerFactory(new WeakEntityTypeNodeFactory())
-    factoriesManager.registerFactory(new RelationshipTypeNodeFactory())
-    factoriesManager.registerFactory(
-      new IdentificationRelationshipTypeNodeFactory()
-    )
+    factoriesManager.registerFactory(new EntityNodeFactory())
+    factoriesManager.registerFactory(new RelationshipNodeFactory())
     factoriesManager.registerFactory(new AttributeNodeFactory())
-    factoriesManager.registerFactory(new MultipleValueAttributeNodeFactory())
-    factoriesManager.registerFactory(new DerivedAttributeNodeFactory())
+
+    this.diagramEngine
+      .getLinkFactories()
+      .registerFactory(new AdvancedLinkFactory())
+    this.diagramEngine.getModel().getSelectedEntities()
   }
 
   public newModel() {
     this.activeModel = new SRD.DiagramModel()
     this.diagramEngine.setModel(this.activeModel)
+    // this.activeModel.registerListener({
+    //   selectionChanged: e => console.log("nodesUpdated", e),
+    //   // linksUpdated: e => console.log("linksUpdated", e),
+    // })
 
     // //3-A) create a default node
     // var node1 = new SRD.DefaultNodeModel("Node 1", "rgb(0,192,255)")
@@ -43,14 +44,15 @@ export class Application {
     // var node2 = new SRD.DefaultNodeModel("Node 2", "rgb(192,255,0)")
     // let port2 = node2.addInPort("In")
     // node2.setPosition(400, 100)
-    const node1 = new EntityTypeModel()
-    node1.setPosition(50, 50)
+    //TODO
+    // node1.setPosition(50, 50)
 
-    // const link1 = new DefaultLinkModel()
+    // const link1 = new AdvancedLinkModel()
+    // node1.getPort('left').addLink(node2.getPort('right'))
     // link1.setSourcePort(node1.getPort("out"))
     // link1.setTargetPort(node2.getPort("in"))
 
-    this.activeModel.addAll(node1)
+    // this.activeModel.addAll(node1)
   }
 
   public getActiveDiagram(): SRD.DiagramModel | null {

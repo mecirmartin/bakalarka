@@ -1,28 +1,31 @@
 import * as React from "react"
-import { WeakEntityTypeModel } from "./WeakEntityTypeModel"
+import { EntityModel } from "./EntityModel"
 
 import { AbstractReactFactory } from "@projectstorm/react-canvas-core"
 import { DiagramEngine } from "@projectstorm/react-diagrams-core"
-import { WEAK_ENTITY_TYPE } from "../../helpers/nodeTypes"
-import { WeakEntityTypeWidget } from "./WeakEntityTypeWidget"
+import { ENTITY } from "../../helpers/nodeTypes"
+import { Entity } from "./EntityWidget"
 
-export class WeakEntityTypeNodeFactory extends AbstractReactFactory<
-  WeakEntityTypeModel,
+export class EntityNodeFactory extends AbstractReactFactory<
+  EntityModel,
   DiagramEngine
 > {
   constructor() {
-    super(WEAK_ENTITY_TYPE)
+    super(ENTITY)
   }
 
   generateModel(initialConfig: any) {
-    return new WeakEntityTypeModel()
+    //TODO
+    return new EntityModel({} as any)
   }
 
   generateReactWidget(event: any): JSX.Element {
     return (
-      <WeakEntityTypeWidget
+      <Entity
         engine={this.engine as DiagramEngine}
         node={event.model}
+        title={event.model.title}
+        entityState={event.model.state}
       />
     )
   }

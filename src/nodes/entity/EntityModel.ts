@@ -1,44 +1,51 @@
 import { NodeModel } from "@projectstorm/react-diagrams"
 
-import { ATTRIBUTE } from "../../helpers/nodeTypes"
 import { BidirectionalPortModel } from "../../components/BidirectionaPortModel"
-import { AttributeTrayState } from "../../components/BodyWidget"
+import { EntityTrayState } from "../../components/BodyWidget"
+import { ENTITY } from "../../helpers/nodeTypes"
 
-export class AttributeModel extends NodeModel {
-  constructor(attributeState: AttributeTrayState) {
+export class EntityModel extends NodeModel {
+  constructor(entityState: EntityTrayState) {
     super({
-      type: ATTRIBUTE,
+      type: ENTITY,
     })
 
-    this.state = attributeState
+    this.state = entityState
 
-    // setup an in and out ports
     this.addPort(
       new BidirectionalPortModel({
+        in: true,
         name: "left",
       })
     )
     this.addPort(
       new BidirectionalPortModel({
+        in: true,
+        name: "bottom",
+      })
+    )
+    this.addPort(
+      new BidirectionalPortModel({
+        in: true,
         name: "right",
       })
     )
     this.addPort(
       new BidirectionalPortModel({
+        in: true,
         name: "top",
-      })
-    )
-    this.addPort(
-      new BidirectionalPortModel({
-        name: "bottom",
       })
     )
   }
 
-  private state: AttributeTrayState
+  private state: EntityTrayState
 
   serialize() {
-    return { ...super.serialize(), state: this.state }
+    return {
+      ...super.serialize(),
+      // You may need to transform these to be serializable
+      state: this.state,
+    }
   }
 
   deserialize(event: any) {
@@ -49,7 +56,7 @@ export class AttributeModel extends NodeModel {
     return this.state
   }
 
-  setState(state: AttributeTrayState) {
+  setState(state: EntityTrayState) {
     this.state = state
   }
 }

@@ -15,15 +15,18 @@ export class AttributeNodeFactory extends AbstractReactFactory<
   }
 
   generateModel(initialConfig: any) {
-    return new AttributeModel()
+    console.log("INITIAL CONFIG", initialConfig)
+    return new AttributeModel({} as any)
   }
 
   generateReactWidget(event: any): JSX.Element {
+    console.log("toto", event.model)
     return (
       <Attribute
         engine={this.engine as DiagramEngine}
         node={event.model}
         title={event.model.title}
+        attributeState={event.model.state}
       />
     )
   }

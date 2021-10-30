@@ -1,32 +1,35 @@
 import * as React from "react"
 import * as _ from "lodash"
 import styled from "@emotion/styled"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { CanvasWidget } from "@projectstorm/react-canvas-core"
 
 import { TrayWidget } from "./TrayWidget"
 import { Application } from "../Application"
-import { TrayItemWidget } from "./TrayItemWidget"
+import { EntityTrayItemWidget } from "./EntityTrayItemWidget"
 import { DemoCanvasWidget } from "../helpers/DemoCanvasWidget"
-import {
-  ATTRIBUTE,
-  DERIVED_ATTRIBUTE,
-  ENTITY_TYPE,
-  IDENTIFICATION_RELATIONSHIP_TYPE,
-  MULTIPLE_VALUE_ATTRIBUTE,
-  RELATIONSHIP_TYPE,
-  WEAK_ENTITY_TYPE,
-} from "../helpers/nodeTypes"
-import { EntityTypeModel } from "../nodes/entity-type/EntityTypeModel"
-import { WeakEntityTypeModel } from "../nodes/weak-entity-type/WeakEntityTypeModel"
-import { RelationshipTypeModel } from "../nodes/relationship-type/RelationshipTypeModel"
-import { IdentificationRelationshipTypeModel } from "../nodes/identification-relationship-type/IdentificationRelationshipTypeModel"
+import { ATTRIBUTE, ENTITY, RELATIONSHIP } from "../helpers/nodeTypes"
+import { EntityModel } from "../nodes/entity/EntityModel"
+import { RelationshipModel } from "../nodes/relationship/RelationshipModel"
 import { AttributeModel } from "../nodes/attribute/AttributeModel"
-import { MultipleValueAttributeModel } from "../nodes/multiple-value-attribute/MultipleValueAttributeModel"
-import { DerivedAttributeModel } from "../nodes/derived-attribute/DerivedAttributeModel"
+import { AttributeTrayItemWidget } from "./AttributeTrayItemWidget"
 
 export interface BodyWidgetProps {
   app: Application
+}
+
+export interface EntityTrayState {
+  isWeak: boolean
+}
+
+export type RelationshipTrayState = EntityTrayState
+
+export type AttributeType = "ATTRIBUTE" | "MULTIPLE_VALUE" | "DERIVED"
+export type KeyType = "NONE" | "PRIMARY_KEY" | "PARTIAL_KEY"
+
+export interface AttributeTrayState {
+  type: AttributeType
+  key: KeyType
 }
 
 export const Body = styled.div`
@@ -57,26 +60,13 @@ export const Layer = styled.div`
   flex-grow: 1;
 `
 
-const createDiagramNode = (type: string) => {
-  switch (type) {
-    case ENTITY_TYPE:
-      return new EntityTypeModel()
-    case WEAK_ENTITY_TYPE:
-      return new WeakEntityTypeModel()
-    case RELATIONSHIP_TYPE:
-      return new RelationshipTypeModel()
-    case IDENTIFICATION_RELATIONSHIP_TYPE:
-      return new IdentificationRelationshipTypeModel()
-    case ATTRIBUTE:
-      return new AttributeModel()
-    case MULTIPLE_VALUE_ATTRIBUTE:
-      return new MultipleValueAttributeModel()
-    case DERIVED_ATTRIBUTE:
-      return new DerivedAttributeModel()
-    default:
-      throw new Error("Unknown diagram node type")
-  }
-}
+const TrayHeader = styled.h3`
+  color: white;
+  font-family: Helvetica;
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+`
 
 const useForceUpdate = () => {
   const [_value, setValue] = useState(0) // integer state
@@ -86,6 +76,55 @@ const useForceUpdate = () => {
 export const BodyWidget: React.FC<BodyWidgetProps> = props => {
   const forceUpdate = useForceUpdate()
 
+  const [focusedLink, setFocusedLink] = useState(null)
+  const [focusedNode, setFocusedNode] = useState(null)
+  const [selectedNodeState, setSelectedNodeState] = useState(null)
+  const [entityTrayState, setEntityTrayState] = useState<EntityTrayState>({
+    isWeak: false,
+  })
+  const [relationshipTrayState, setRelationshipTrayState] =
+    useState<RelationshipTrayState>({
+      isWeak: false,
+    })
+  const [attributeTrayState, setAttributeTrayState] =
+    useState<AttributeTrayState>({
+      type: "ATTRIBUTE",
+      key: "NONE",
+    })
+
+  useEffect(() => {
+    if (!focusedNode) return
+    focusedNode.setState(selectedNodeState)
+
+    props.app.getDiagramEngine().repaintCanvas()
+  }, [selectedNodeState])
+
+  // useEffect(() => {
+  //   if (focusedNode instanceof EntityModel) {
+  //     console.log("setujem", focusedNode.getState())
+  //     setEntityTrayState(focusedNode.getState())
+  //   } else if (focusedNode instanceof RelationshipModel) {
+  //     setRelationshipTrayState(focusedNode.getState())
+  //   } else if (focusedNode instanceof AttributeModel) {
+  //     setAttributeTrayState(focusedNode.getState())
+  //   }
+  // }, [focusedNode])
+
+  console.log(selectedNodeState)
+
+  const createDiagramNode = (type: string) => {
+    switch (type) {
+      case ENTITY:
+        return new EntityModel(entityTrayState)
+      case RELATIONSHIP:
+        return new RelationshipModel(relationshipTrayState)
+      case ATTRIBUTE:
+        return new AttributeModel(attributeTrayState)
+      default:
+        throw new Error("Unknown diagram node type")
+    }
+  }
+
   return (
     <Body>
       <Header>
@@ -93,48 +132,61 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
       </Header>
       <Content>
         <TrayWidget>
-          <TrayItemWidget
-            model={ENTITY_TYPE}
-            name="Entity Type"
+          <EntityTrayItemWidget
+            model={ENTITY}
+            name="Entity"
             color="rgb(0,192,255)"
+            setEntityTrayState={setEntityTrayState}
           />
-          <TrayItemWidget
-            model={WEAK_ENTITY_TYPE}
-            name="Weak Entity Type"
-            color="rgb(0,192,255)"
-          />
-          <TrayItemWidget
-            model={RELATIONSHIP_TYPE}
+          <EntityTrayItemWidget
+            model={RELATIONSHIP}
             name="Relationship"
             color="rgb(0,192,255)"
+            setEntityTrayState={setRelationshipTrayState}
           />
-          <TrayItemWidget
-            model={IDENTIFICATION_RELATIONSHIP_TYPE}
-            name="Identification Relationship"
-            color="rgb(0,192,255)"
-          />
-          <TrayItemWidget
+          <AttributeTrayItemWidget
             model={ATTRIBUTE}
             name="Attribute"
             color="rgb(0,192,255)"
+            attributeTrayState={attributeTrayState}
+            setAttributeTrayState={setAttributeTrayState}
           />
-          <TrayItemWidget
-            model={MULTIPLE_VALUE_ATTRIBUTE}
-            name="Multiple Value Attribute"
-            color="rgb(0,192,255)"
-          />
-          <TrayItemWidget
-            model={DERIVED_ATTRIBUTE}
-            name="Derived Attribute"
-            color="rgb(0,192,255)"
-          />
+          <TrayHeader>Selected Node</TrayHeader>
+          {focusedNode instanceof EntityModel && (
+            <EntityTrayItemWidget
+              model={ENTITY}
+              name="Entity"
+              color="rgb(144,238,144)"
+              state={selectedNodeState}
+              setEntityTrayState={setSelectedNodeState}
+            />
+          )}
+
+          {focusedNode instanceof RelationshipModel && (
+            <EntityTrayItemWidget
+              model={RELATIONSHIP}
+              name="Relationship"
+              color="rgb(144,238,144)"
+              state={selectedNodeState}
+              setEntityTrayState={setSelectedNodeState}
+            />
+          )}
+
+          {focusedNode instanceof AttributeModel && (
+            <AttributeTrayItemWidget
+              model={ATTRIBUTE}
+              name="Attribute"
+              color="rgb(144,238,144)"
+              attributeTrayState={selectedNodeState}
+              setAttributeTrayState={setSelectedNodeState}
+            />
+          )}
         </TrayWidget>
         <Layer
           onDrop={event => {
             const nodeType = JSON.parse(
               event.dataTransfer.getData("storm-diagram-node")
             )
-            console.log("e", event, nodeType)
 
             const node = createDiagramNode(nodeType)
 
@@ -142,7 +194,14 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
               .getDiagramEngine()
               .getRelativeMousePoint(event)
             node.setPosition(point)
-            props.app.getDiagramEngine().getModel().addNode(node)
+
+            node.registerListener({
+              selectionChanged: e => e.isSelected && setFocusedNode(e.entity),
+            })
+
+            props.app.getDiagramEngine().getModel().addAll(node)
+            setFocusedNode(node)
+            setSelectedNodeState(node.getState())
             forceUpdate()
           }}
           onDragOver={event => {

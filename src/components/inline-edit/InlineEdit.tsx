@@ -1,5 +1,6 @@
 import React from "react"
 import ContentEditable from "react-contenteditable"
+import { AttributeTrayState } from "../BodyWidget"
 
 interface InlineEditState {
   html: string
@@ -8,6 +9,7 @@ interface InlineEditProps {
   text: string
   bold?: boolean
   marginTop?: number
+  attributeState?: AttributeTrayState
 }
 
 export class InlineEdit extends React.Component<
@@ -34,6 +36,15 @@ export class InlineEdit extends React.Component<
           fontSize: "1.4rem",
           textAlign: "center",
           marginTop: this.props.marginTop,
+          textDecoration:
+            this.props.attributeState?.key === "PRIMARY_KEY" ||
+            this.props.attributeState?.key === "PARTIAL_KEY"
+              ? "underline"
+              : "none",
+          textDecorationStyle:
+            this.props.attributeState?.key === "PARTIAL_KEY"
+              ? "dashed"
+              : "solid",
         }}
         html={this.state.html} // innerHTML of the editable div
         disabled={false} // use true to disable edition

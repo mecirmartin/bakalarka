@@ -1,29 +1,31 @@
 import * as React from "react"
+import { RelationshipModel } from "./RelationshipModel"
+
 import { AbstractReactFactory } from "@projectstorm/react-canvas-core"
 import { DiagramEngine } from "@projectstorm/react-diagrams-core"
+import { RELATIONSHIP } from "../../helpers/nodeTypes"
+import { Relationship } from "./RelationshipWidget"
 
-import { MultipleValueAttributeModel } from "./MultipleValueAttributeModel"
-import { MULTIPLE_VALUE_ATTRIBUTE } from "../../helpers/nodeTypes"
-import { MultipleValueAttribute } from "./MultipleValueAttributeWidget"
-
-export class MultipleValueAttributeNodeFactory extends AbstractReactFactory<
-  MultipleValueAttributeModel,
+export class RelationshipNodeFactory extends AbstractReactFactory<
+  RelationshipModel,
   DiagramEngine
 > {
   constructor() {
-    super(MULTIPLE_VALUE_ATTRIBUTE)
+    super(RELATIONSHIP)
   }
 
   generateModel(initialConfig: any) {
-    return new MultipleValueAttributeModel()
+    return new RelationshipModel({} as any)
   }
 
   generateReactWidget(event: any): JSX.Element {
+    console.log(event.model, this.engine)
     return (
-      <MultipleValueAttribute
+      <Relationship
         engine={this.engine as DiagramEngine}
         node={event.model}
         title={event.model.title}
+        relationshipState={event.model.state}
       />
     )
   }

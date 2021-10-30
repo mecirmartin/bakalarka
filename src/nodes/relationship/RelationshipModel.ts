@@ -1,18 +1,18 @@
 import { NodeModel } from "@projectstorm/react-diagrams"
 
-import { ATTRIBUTE } from "../../helpers/nodeTypes"
+import { RELATIONSHIP } from "../../helpers/nodeTypes"
+import { RelationshipTrayState } from "../../components/BodyWidget"
 import { BidirectionalPortModel } from "../../components/BidirectionaPortModel"
-import { AttributeTrayState } from "../../components/BodyWidget"
 
-export class AttributeModel extends NodeModel {
-  constructor(attributeState: AttributeTrayState) {
+export class RelationshipModel extends NodeModel {
+  constructor(relationshipState: RelationshipTrayState) {
     super({
-      type: ATTRIBUTE,
+      type: RELATIONSHIP,
     })
 
-    this.state = attributeState
+    this.state = relationshipState
 
-    // setup an in and out ports
+    // setup an in and out port
     this.addPort(
       new BidirectionalPortModel({
         name: "left",
@@ -35,7 +35,7 @@ export class AttributeModel extends NodeModel {
     )
   }
 
-  private state: AttributeTrayState
+  private state: RelationshipTrayState
 
   serialize() {
     return { ...super.serialize(), state: this.state }
@@ -49,7 +49,7 @@ export class AttributeModel extends NodeModel {
     return this.state
   }
 
-  setState(state: AttributeTrayState) {
+  setState(state: RelationshipTrayState) {
     this.state = state
   }
 }

@@ -7,29 +7,16 @@ interface CirclePortProps {
   left?: string
 }
 
-export const RightCirclePort = styled.div<CirclePortProps>`
+export const CirclePort = styled.div<CirclePortProps>`
   position: absolute;
   right: ${props => props.right};
   top: ${props => props.top};
-  width: 12px;
-  height: 12px;
+  width: 1rem;
+  height: 1rem;
   border-radius: 4px;
   background: #333;
   cursor: pointer;
-  &:hover {
-    background: darkgray;
-  }
-`
-
-export const LeftCirclePort = styled.div<CirclePortProps>`
-  position: absolute;
-  left: ${props => props.left};
-  top: ${props => props.top};
-  width: 12px;
-  height: 12px;
-  border-radius: 4px;
-  background: #333;
-  cursor: pointer;
+  z-index: 2;
   &:hover {
     background: darkgray;
   }
