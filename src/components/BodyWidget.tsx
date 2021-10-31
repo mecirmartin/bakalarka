@@ -8,11 +8,18 @@ import { TrayWidget } from "./TrayWidget"
 import { Application } from "../Application"
 import { EntityTrayItemWidget } from "./EntityTrayItemWidget"
 import { DemoCanvasWidget } from "../helpers/DemoCanvasWidget"
-import { ATTRIBUTE, ENTITY, RELATIONSHIP } from "../helpers/nodeTypes"
+import {
+  ATTRIBUTE,
+  ENTITY,
+  GENERALIZATION_CATEGORY,
+  RELATIONSHIP,
+} from "../helpers/nodeTypes"
 import { EntityModel } from "../nodes/entity/EntityModel"
 import { RelationshipModel } from "../nodes/relationship/RelationshipModel"
 import { AttributeModel } from "../nodes/attribute/AttributeModel"
 import { AttributeTrayItemWidget } from "./AttributeTrayItemWidget"
+import { TrayItemWidget } from "./TrayItemWidget"
+import { TriangleNodeModel } from "../nodes/generalization-category/TriangleNodeModel"
 
 export interface BodyWidgetProps {
   app: Application
@@ -120,6 +127,8 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
         return new RelationshipModel(relationshipTrayState)
       case ATTRIBUTE:
         return new AttributeModel(attributeTrayState)
+      case GENERALIZATION_CATEGORY:
+        return new TriangleNodeModel()
       default:
         throw new Error("Unknown diagram node type")
     }
@@ -150,6 +159,11 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
             color="rgb(0,192,255)"
             attributeTrayState={attributeTrayState}
             setAttributeTrayState={setAttributeTrayState}
+          />
+          <TrayItemWidget
+            model={GENERALIZATION_CATEGORY}
+            name="Generalization/category"
+            color="rgb(0,192,255)"
           />
           <TrayHeader>Selected Node</TrayHeader>
           {focusedNode instanceof EntityModel && (
@@ -197,11 +211,34 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
 
             node.registerListener({
               selectionChanged: e => e.isSelected && setFocusedNode(e.entity),
+              linksUpdated: e => console.log("links updated", e),
             })
 
+            console.log("serializer", node.serialize())
+
             props.app.getDiagramEngine().getModel().addAll(node)
+            props.app
+              .getDiagramEngine()
+              .getModel()
+              .registerListener({
+                linksUpdated: e => {
+                  // e.link.addLabel(
+                  //   new DefaultLabelModel({
+                  //     label: "iijfjsdjfjk",
+                  //     locked: true,
+                  //   })
+                  // )
+                  // e.link.addLabel(new DefaultLabelModel({ label: "xxx" }))
+                  e.link.registerListener({
+                    selectionChanged: e => console.log("selchanged", e),
+                  })
+                },
+              })
             setFocusedNode(node)
-            setSelectedNodeState(node.getState())
+
+            if (!(node instanceof TriangleNodeModel)) {
+              setSelectedNodeState(node.getState())
+            }
             forceUpdate()
           }}
           onDragOver={event => {

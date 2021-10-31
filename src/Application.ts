@@ -1,11 +1,11 @@
 import * as SRD from "@projectstorm/react-diagrams"
 
 import { EntityNodeFactory } from "./nodes/entity/EntityFactory"
-import { EntityModel } from "./nodes/entity/EntityModel"
 import { RelationshipNodeFactory } from "./nodes/relationship/RelationshipFactory"
 import { AttributeNodeFactory } from "./nodes/attribute/AttributeFactory"
 import { AdvancedLinkFactory } from "./links/custom-link/AdvancedLinkFactory"
 import { AdvancedLinkModel } from "./links/custom-link/AdvancedLinkMode"
+import { TriangleNodeFactory } from "./nodes/generalization-category/TriangleNodeFactory"
 
 export class Application {
   protected activeModel: SRD.DiagramModel
@@ -20,6 +20,7 @@ export class Application {
     factoriesManager.registerFactory(new EntityNodeFactory())
     factoriesManager.registerFactory(new RelationshipNodeFactory())
     factoriesManager.registerFactory(new AttributeNodeFactory())
+    factoriesManager.registerFactory(new TriangleNodeFactory())
 
     this.diagramEngine
       .getLinkFactories()
