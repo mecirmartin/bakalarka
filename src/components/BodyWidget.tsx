@@ -20,6 +20,7 @@ import { AttributeModel } from "../nodes/attribute/AttributeModel"
 import { AttributeTrayItemWidget } from "./AttributeTrayItemWidget"
 import { TrayItemWidget } from "./TrayItemWidget"
 import { TriangleNodeModel } from "../nodes/generalization-category/TriangleNodeModel"
+import { DefaultLabelModel } from "@projectstorm/react-diagrams"
 
 export interface BodyWidgetProps {
   app: Application
@@ -33,6 +34,12 @@ export type RelationshipTrayState = EntityTrayState
 
 export type AttributeType = "ATTRIBUTE" | "MULTIPLE_VALUE" | "DERIVED"
 export type KeyType = "NONE" | "PRIMARY_KEY" | "PARTIAL_KEY"
+export type LineTypeState =
+  | "singleLine"
+  | "multiLine"
+  | "aggregation"
+  | "composition"
+  | "nonTransferableRelationship"
 
 export interface AttributeTrayState {
   type: AttributeType
@@ -80,10 +87,12 @@ const useForceUpdate = () => {
   return () => setValue(value => value + 1) // update the state to force render
 }
 
+export let lineType: LineTypeState = "singleLine"
+
 export const BodyWidget: React.FC<BodyWidgetProps> = props => {
   const forceUpdate = useForceUpdate()
 
-  const [focusedLink, setFocusedLink] = useState(null)
+  // const [focusedLink, setFocusedLink] = useState(null)
   const [focusedNode, setFocusedNode] = useState(null)
   const [selectedNodeState, setSelectedNodeState] = useState(null)
   const [entityTrayState, setEntityTrayState] = useState<EntityTrayState>({
@@ -98,6 +107,10 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
       type: "ATTRIBUTE",
       key: "NONE",
     })
+  console.log(props, props.app.getActiveDiagram(), props.app.getDiagramEngine())
+
+  const [lineTypeState, setLineTypeState] =
+    useState<LineTypeState>("singleLine")
 
   useEffect(() => {
     if (!focusedNode) return
@@ -105,6 +118,26 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
 
     props.app.getDiagramEngine().repaintCanvas()
   }, [selectedNodeState])
+
+  useEffect(() => {
+    props.app
+      .getDiagramEngine()
+      .getModel()
+      .registerListener({
+        linksUpdated: e => {
+          // e.link.addLabel(
+          //   new DefaultLabelModel({
+          //     label: "iijfjsdjfjk",
+          //     locked: true,
+          //   })
+          // )
+          // e.link.addLabel(new DefaultLabelModel({ label: "xxx" }))
+          // e.link.registerListener({
+          //   selectionChanged: e => console.log("selchanged", e),
+          // })
+        },
+      })
+  }, [])
 
   // useEffect(() => {
   //   if (focusedNode instanceof EntityModel) {
@@ -165,6 +198,34 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
             name="Generalization/category"
             color="rgb(0,192,255)"
           />
+
+          <TrayHeader>Line type</TrayHeader>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <select
+              name="lineSelect"
+              onChange={e => {
+                lineType = e.target.value as LineTypeState
+                setLineTypeState(lineType)
+              }}
+              value={lineTypeState}
+              id="lineSelect"
+            >
+              <option value="singleLine">Single line</option>
+              <option value="multiLine">Multi line</option>
+              <option value="aggregation">Aggregation</option>
+              <option value="composition">Composition</option>
+              <option value="nonTransferableRelationship">
+                Non-transferable
+              </option>
+            </select>
+          </div>
+
           <TrayHeader>Selected Node</TrayHeader>
           {focusedNode instanceof EntityModel && (
             <EntityTrayItemWidget
@@ -210,30 +271,37 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
             node.setPosition(point)
 
             node.registerListener({
-              selectionChanged: e => e.isSelected && setFocusedNode(e.entity),
+              selectionChanged: e => {
+                if (e.isSelected) {
+                  setFocusedNode(e.entity)
+                  //@ts-ignore
+                  if (e.entity.getState) {
+                    //@ts-ignore
+                    setSelectedNodeState(e.entity.getState())
+                  }
+                }
+              },
               linksUpdated: e => console.log("links updated", e),
             })
 
-            console.log("serializer", node.serialize())
-
             props.app.getDiagramEngine().getModel().addAll(node)
-            props.app
-              .getDiagramEngine()
-              .getModel()
-              .registerListener({
-                linksUpdated: e => {
-                  // e.link.addLabel(
-                  //   new DefaultLabelModel({
-                  //     label: "iijfjsdjfjk",
-                  //     locked: true,
-                  //   })
-                  // )
-                  // e.link.addLabel(new DefaultLabelModel({ label: "xxx" }))
-                  e.link.registerListener({
-                    selectionChanged: e => console.log("selchanged", e),
-                  })
-                },
-              })
+            // props.app
+            //   .getDiagramEngine()
+            //   .getModel()
+            //   .registerListener({
+            //     linksUpdated: e => {
+            //       // e.link.addLabel(
+            //       //   new DefaultLabelModel({
+            //       //     label: "iijfjsdjfjk",
+            //       //     locked: true,
+            //       //   })
+            //       // )
+            //       e.link.addLabel(new DefaultLabelModel({ label: "xxx" }))
+            //       // e.link.registerListener({
+            //       //   selectionChanged: e => console.log("selchanged", e),
+            //       // })
+            //     },
+            //   })
             setFocusedNode(node)
 
             if (!(node instanceof TriangleNodeModel)) {

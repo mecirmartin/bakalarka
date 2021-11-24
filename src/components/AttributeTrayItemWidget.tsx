@@ -63,7 +63,7 @@ export const AttributeTrayItemWidget: React.FC<AttributeTrayItemWidgetProps> =
           <option value="NONE">None</option>
           {attributeTrayState.type !== "DERIVED" && (
             <>
-              <option value="PRIMARY_KEY">Primary key</option>
+              <option value="PRIMARY_KEY">Key</option>
               <option value="PARTIAL_KEY">Partial key</option>
             </>
           )}
