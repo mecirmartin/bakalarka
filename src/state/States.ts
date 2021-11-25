@@ -7,12 +7,7 @@ import {
   SelectingState,
 } from "@projectstorm/react-canvas-core"
 import { DragNewLinkState } from "@projectstorm/react-diagrams"
-import {
-  PortModel,
-  LinkModel,
-  PointModel,
-} from "@projectstorm/react-diagrams-core"
-import { AdvancedLinkModel } from "../links/advancedlink/AdvancedLinkModel"
+import { PortModel, LinkModel } from "@projectstorm/react-diagrams-core"
 
 import SelectLinkState from "./SelectLinkState"
 
@@ -44,7 +39,7 @@ export class States extends State {
             .getActionEventBus()
             //@ts-ignore
             .getModelForEvent(event)
-          console.log("mouse down")
+          console.log("mouse down", element)
 
           // The canvas was clicked on, transition to the dragging canvas state
           if (!element) {

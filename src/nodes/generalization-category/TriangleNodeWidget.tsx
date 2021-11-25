@@ -57,8 +57,8 @@ export class TriangleNodeWidget extends React.Component<
         >
           <CirclePort />
         </PortWidget>
-        <div style={{ position: "absolute", top: 42, right: -23 }}>
-          <InlineEdit text={"d/o/u"} />
+        <div style={{ position: "absolute", top: 40, right: -6 }}>
+          <InlineEdit text={"d"} />
         </div>
       </TriangleNode>
     )

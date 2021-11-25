@@ -1,20 +1,17 @@
-import { PortModel } from "@projectstorm/react-diagrams-core"
-import {
-  DefaultLabelModel,
-  DefaultLinkModel,
-  DefaultPortModel,
-} from "@projectstorm/react-diagrams-defaults"
+import { DefaultPortModel } from "@projectstorm/react-diagrams-defaults"
 import { AdvancedLinkModel } from "../links/advancedlink/AdvancedLinkModel"
 import { SimpleLinkModel } from "../links/simplelink/SimpleLinkModel"
 import { lineType } from "./BodyWidget"
 
 export class BidirectionalPortModel extends DefaultPortModel {
-  canLinkToPort(port: PortModel) {
+  canLinkToPort() {
     return true
   }
   createLinkModel() {
     if (lineType === "singleLine" || lineType === "multiLine") {
-      return new SimpleLinkModel(lineType)
+      const linkModel = new SimpleLinkModel(lineType)
+
+      return linkModel
     } else if (
       lineType === "aggregation" ||
       lineType === "composition" ||

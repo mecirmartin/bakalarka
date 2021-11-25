@@ -1,7 +1,4 @@
-import {
-  DefaultLabelModel,
-  DefaultLinkModel,
-} from "@projectstorm/react-diagrams"
+import { DefaultLinkModel } from "@projectstorm/react-diagrams"
 
 export class AdvancedLinkModel extends DefaultLinkModel {
   constructor(lineType: string) {

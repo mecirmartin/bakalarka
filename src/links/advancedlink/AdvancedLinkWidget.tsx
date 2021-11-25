@@ -3,7 +3,6 @@ import {
   PointModel,
   LinkWidget,
 } from "@projectstorm/react-diagrams"
-import { lineType } from "../../components/BodyWidget"
 
 const CustomLinkArrowWidget = props => {
   const {

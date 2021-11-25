@@ -1,14 +1,7 @@
-import {
-  DefaultLinkWidget,
-  PointModel,
-  LinkWidget,
-  DefaultLinkSegmentWidget,
-  DefaultLinkPointWidget,
-} from "@projectstorm/react-diagrams"
+import { DefaultLinkWidget, LinkWidget } from "@projectstorm/react-diagrams"
 
 export class SimpleLinkWidget extends DefaultLinkWidget {
   render() {
-    console.log(this.props, this.refPaths)
     //ensure id is present for all points on the path
     const points = this.props.link.getPoints()
     const paths = []
@@ -41,9 +34,9 @@ export class SimpleLinkWidget extends DefaultLinkWidget {
 
     const linkPaths = paths.filter(p => p.props.link)
     const pointPaths = paths.filter(p => p.props.point)
-    console.log(linkPaths, pointPaths, paths)
+
     return (
-      <svg>
+      <>
         <defs>
           <filter id="double">
             <feMorphology
@@ -71,7 +64,7 @@ export class SimpleLinkWidget extends DefaultLinkWidget {
           {linkPaths}
         </g>
         <g>{pointPaths}</g>
-      </svg>
+      </>
     )
   }
 }

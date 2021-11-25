@@ -1,7 +1,4 @@
-import {
-  DefaultLabelModel,
-  DefaultLinkFactory,
-} from "@projectstorm/react-diagrams"
+import { DefaultLinkFactory } from "@projectstorm/react-diagrams"
 import React from "react"
 // TODO some global state please!!!
 import { lineType } from "../../components/BodyWidget"

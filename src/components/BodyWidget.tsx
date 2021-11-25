@@ -1,5 +1,4 @@
 import * as React from "react"
-import * as _ from "lodash"
 import styled from "@emotion/styled"
 import { useEffect, useState } from "react"
 import { CanvasWidget } from "@projectstorm/react-canvas-core"
@@ -20,7 +19,12 @@ import { AttributeModel } from "../nodes/attribute/AttributeModel"
 import { AttributeTrayItemWidget } from "./AttributeTrayItemWidget"
 import { TrayItemWidget } from "./TrayItemWidget"
 import { TriangleNodeModel } from "../nodes/generalization-category/TriangleNodeModel"
-import { DefaultLabelModel } from "@projectstorm/react-diagrams"
+import { LinkModel, LinkModelGenerics } from "@projectstorm/react-diagrams-core"
+import {
+  DefaultLabelFactory,
+  DefaultLabelModel,
+} from "@projectstorm/react-diagrams-defaults"
+import { EditableLabelModel } from "../links/editable-label/EditableLabelModel"
 
 export interface BodyWidgetProps {
   app: Application
@@ -83,7 +87,7 @@ const TrayHeader = styled.h3`
 `
 
 const useForceUpdate = () => {
-  const [_value, setValue] = useState(0) // integer state
+  const [_, setValue] = useState(0) // integer state
   return () => setValue(value => value + 1) // update the state to force render
 }
 
@@ -107,7 +111,6 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
       type: "ATTRIBUTE",
       key: "NONE",
     })
-  console.log(props, props.app.getActiveDiagram(), props.app.getDiagramEngine())
 
   const [lineTypeState, setLineTypeState] =
     useState<LineTypeState>("singleLine")
@@ -125,6 +128,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
       .getModel()
       .registerListener({
         linksUpdated: e => {
+          console.log("links updated", e)
           // e.link.addLabel(
           //   new DefaultLabelModel({
           //     label: "iijfjsdjfjk",
@@ -139,18 +143,16 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
       })
   }, [])
 
-  // useEffect(() => {
-  //   if (focusedNode instanceof EntityModel) {
-  //     console.log("setujem", focusedNode.getState())
-  //     setEntityTrayState(focusedNode.getState())
-  //   } else if (focusedNode instanceof RelationshipModel) {
-  //     setRelationshipTrayState(focusedNode.getState())
-  //   } else if (focusedNode instanceof AttributeModel) {
-  //     setAttributeTrayState(focusedNode.getState())
-  //   }
-  // }, [focusedNode])
-
-  console.log(selectedNodeState)
+  const addLabelToSelectedLinks = (links: LinkModel[]) => {
+    links.forEach(l => {
+      console.log(l.getOptions())
+      if (l.getOptions().selected) {
+        l.addLabel(new EditableLabelModel())
+        console.log(l.getLabels())
+      }
+    })
+    props.app.getDiagramEngine().repaintCanvas()
+  }
 
   const createDiagramNode = (type: string) => {
     switch (type) {
@@ -256,6 +258,15 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
               setAttributeTrayState={setSelectedNodeState}
             />
           )}
+          <button
+            onClick={() =>
+              addLabelToSelectedLinks(
+                props.app.getDiagramEngine().getModel().getLinks()
+              )
+            }
+          >
+            Clic
+          </button>
         </TrayWidget>
         <Layer
           onDrop={event => {

@@ -7,11 +7,3 @@ const App = () => {
 }
 
 export default App
-
-//TODO
-interface NodePos {
-  name: string
-  x: number
-  y: number
-  children: NodePos[]
-}

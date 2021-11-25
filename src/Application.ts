@@ -4,11 +4,11 @@ import { EntityNodeFactory } from "./nodes/entity/EntityFactory"
 import { RelationshipNodeFactory } from "./nodes/relationship/RelationshipFactory"
 import { AttributeNodeFactory } from "./nodes/attribute/AttributeFactory"
 import { AdvancedLinkFactory } from "./links/advancedlink/AdvancedLinkFactory"
-import { AdvancedLinkModel } from "./links/advancedlink/AdvancedLinkModel"
 import { TriangleNodeFactory } from "./nodes/generalization-category/TriangleNodeFactory"
 import { States } from "./state/States"
 import { DefaultDiagramState } from "@projectstorm/react-diagrams"
 import { SimpleLinkFactory } from "./links/simplelink/SimpleLinkFactory"
+import { EditableLabelFactory } from "./links/editable-label/EditableLabelFactory"
 
 export class Application {
   protected activeModel: SRD.DiagramModel
@@ -31,6 +31,9 @@ export class Application {
     this.diagramEngine
       .getLinkFactories()
       .registerFactory(new SimpleLinkFactory())
+    this.diagramEngine
+      .getLabelFactories()
+      .registerFactory(new EditableLabelFactory())
     this.diagramEngine.getStateMachine().pushState(new States())
     const state = this.diagramEngine.getStateMachine().getCurrentState()
 
