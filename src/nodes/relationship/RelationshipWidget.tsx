@@ -16,7 +16,9 @@ export interface RelationshipProps {
 
 export interface RelationshipState {}
 
-export const RelationshipDiv = styled.div`
+export const RelationshipDiv = styled.div<{ isSelected: boolean }>`
+  box-shadow: ${props =>
+    props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none"};
   position: relative;
   border: solid 3px #333;
   width: 8rem;
@@ -82,7 +84,7 @@ export class Relationship extends React.Component<
         >
           <CirclePort />
         </PortWidget>
-        <RelationshipDiv>
+        <RelationshipDiv isSelected={this.props.node.isSelected()}>
           {this.props.relationshipState.isWeak ? (
             <div
               style={{

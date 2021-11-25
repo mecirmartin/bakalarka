@@ -16,7 +16,9 @@ export interface AttributeProps {
 
 export interface AttributeState {}
 
-export const AttributeDiv = styled.div`
+export const AttributeDiv = styled.div<{ isSelected: boolean }>`
+  box-shadow: ${props =>
+    props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none"};
   position: relative;
   border: solid 3px #333;
   width: 8rem;
@@ -28,7 +30,9 @@ export const AttributeDiv = styled.div`
   background-color: #fff;
   border-radius: 50%;
 `
-export const DerivedAttributeDiv = styled.div`
+export const DerivedAttributeDiv = styled.div<{ isSelected: boolean }>`
+  box-shadow: ${props =>
+    props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none"};
   position: relative;
   border: dashed 3px #333;
   width: 8rem;
@@ -89,11 +93,11 @@ export class Attribute extends React.Component<AttributeProps, AttributeState> {
         </PortWidget>
 
         {this.props.attributeState.type === "DERIVED" ? (
-          <DerivedAttributeDiv>
+          <DerivedAttributeDiv isSelected={this.props.node.isSelected()}>
             <InlineEdit text={"Attribute"} />
           </DerivedAttributeDiv>
         ) : this.props.attributeState.type === "MULTIPLE_VALUE" ? (
-          <AttributeDiv>
+          <AttributeDiv isSelected={this.props.node.isSelected()}>
             <MultipleValueAttributeDiv>
               <InlineEdit
                 text={"Attribute"}
@@ -102,7 +106,7 @@ export class Attribute extends React.Component<AttributeProps, AttributeState> {
             </MultipleValueAttributeDiv>
           </AttributeDiv>
         ) : (
-          <AttributeDiv>
+          <AttributeDiv isSelected={this.props.node.isSelected()}>
             <InlineEdit
               text={"Attribute"}
               attributeState={this.props.attributeState}

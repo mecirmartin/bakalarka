@@ -12,7 +12,9 @@ export interface TriangleNodeWidgetProps {
 
 export interface TriangleNodeWidgetState {}
 
-const TriangleNode = styled.div`
+const TriangleNode = styled.div<{ isSelected: boolean }>`
+  box-shadow: ${props =>
+    props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none"};
   position: relative;
   width: 0;
   border-bottom: solid 80px black;
@@ -41,7 +43,7 @@ export class TriangleNodeWidget extends React.Component<
 
   render() {
     return (
-      <TriangleNode>
+      <TriangleNode isSelected={this.props.node.isSelected()}>
         <Empty></Empty>
         <PortWidget
           engine={this.props.engine}

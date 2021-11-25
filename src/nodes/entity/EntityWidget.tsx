@@ -16,9 +16,11 @@ export interface EntityProps {
 
 export interface EntityState {}
 
-export const EntityDiv = styled.div`
+export const EntityDiv = styled.div<{ isSelected: boolean }>`
   position: relative;
   border: solid 3px #333;
+  box-shadow: ${props =>
+    props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none"};
   width: 250px;
   height: 80px;
   display: flex;
@@ -47,7 +49,7 @@ export class Entity extends React.Component<EntityProps, EntityState> {
 
   render() {
     return (
-      <EntityDiv>
+      <EntityDiv isSelected={this.props.node.isSelected()}>
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("left")!}
