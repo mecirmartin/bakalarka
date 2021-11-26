@@ -46,7 +46,9 @@ export class InlineEdit extends React.Component<
             textDecorationStyle:
               this.props.attributeState?.key === "PARTIAL_KEY"
                 ? "dashed"
-                : "solid",
+                : this.props.attributeState?.key === "PRIMARY_KEY"
+                ? "solid"
+                : "none",
           }
         }
         html={this.state.html} // innerHTML of the editable div

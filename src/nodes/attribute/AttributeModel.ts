@@ -39,7 +39,7 @@ export class AttributeModel extends NodeModel {
   private extras: AttributeTrayState
 
   serialize() {
-    return { ...super.serialize(), state: this.extras }
+    return { ...super.serialize(), extras: this.extras }
   }
 
   deserialize(event: any) {

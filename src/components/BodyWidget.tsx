@@ -3,6 +3,7 @@ import styled from "@emotion/styled"
 import { useEffect, useState } from "react"
 import { CanvasWidget } from "@projectstorm/react-canvas-core"
 import { LinkModel } from "@projectstorm/react-diagrams-core"
+import { saveAs } from "file-saver"
 
 import { TrayWidget } from "./TrayWidget"
 import { Application } from "../Application"
@@ -82,6 +83,28 @@ const TrayHeader = styled.h3`
   margin-bottom: 0.5rem;
 `
 
+const ButtonTray = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5rem;
+`
+
+const TrayButton = styled.button`
+  color: white;
+  font-family: Helvetica, Arial;
+  padding: 5px;
+  margin: 0px 10px;
+  border: solid 1px rgb(0, 192, 255);
+  border-radius: 5px;
+  margin-bottom: 2px;
+  cursor: pointer;
+  background-color: rgb(20, 20, 20);
+  margin-top: 1rem;
+  width: 80%;
+`
+
 const useForceUpdate = () => {
   const [_, setValue] = useState(0) // integer state
   return () => setValue(value => value + 1) // update the state to force render
@@ -93,8 +116,6 @@ export let lineType: LineTypeState = "singleLine"
 
 export const BodyWidget: React.FC<BodyWidgetProps> = props => {
   const forceUpdate = useForceUpdate()
-
-  // const [focusedLink, setFocusedLink] = useState(null)
   const [focusedNode, setFocusedNode] = useState(null)
   const [selectedNodeState, setSelectedNodeState] = useState(null)
   const [entityTrayState, setEntityTrayState] = useState<EntityTrayState>({
@@ -109,6 +130,8 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
       type: "ATTRIBUTE",
       key: "NONE",
     })
+
+  console.log(selectedNodeState)
 
   const [lineTypeState, setLineTypeState] =
     useState<LineTypeState>("singleLine")
@@ -233,55 +256,61 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
               setAttributeTrayState={setSelectedNodeState}
             />
           )}
-          <button
-            onClick={() =>
-              addLabelToSelectedLinks(
-                props.app.getDiagramEngine().getModel().getLinks()
-              )
-            }
-          >
-            Click
-          </button>
-          <button
-            onClick={() => {
-              serialized = props.app.getDiagramEngine().getModel().serialize()
-            }}
-          >
-            Serialize
-          </button>
-          <button
-            onClick={() => {
-              console.log(serialized)
-              props.app
-                .getDiagramEngine()
-                .getModel()
-                .deserializeModel(serialized, props.app.getDiagramEngine())
-              props.app
-                .getDiagramEngine()
-                .getModel()
-                .getNodes()
-                .forEach(n =>
-                  n.registerListener({
-                    selectionChanged: e => {
-                      if (e.isSelected) {
-                        //@ts-ignore
-                        console.log("selChanged", e.entity.getState())
-                        setFocusedNode(e.entity)
-                        //@ts-ignore
-                        if (e.entity.getState()) {
-                          console.log("selectedNode")
-                          //@ts-ignore
-                          setSelectedNodeState(e.entity.getState())
-                        }
-                      }
-                    },
-                  })
+          <ButtonTray>
+            <TrayButton
+              onClick={() =>
+                addLabelToSelectedLinks(
+                  props.app.getDiagramEngine().getModel().getLinks()
                 )
-              props.app.getDiagramEngine().repaintCanvas()
-            }}
-          >
-            Deserialize
-          </button>
+              }
+            >
+              Add label
+            </TrayButton>
+            <TrayButton
+              onClick={() => {
+                const serialized = props.app
+                  .getDiagramEngine()
+                  .getModel()
+                  .serialize()
+                saveAs(JSON.stringify(serialized), "serialized.txt")
+              }}
+            >
+              Serialize graph
+            </TrayButton>
+            <TrayButton
+              onClick={() => {
+                console.log(serialized)
+                props.app
+                  .getDiagramEngine()
+                  .getModel()
+                  .deserializeModel(serialized, props.app.getDiagramEngine())
+                props.app
+                  .getDiagramEngine()
+                  .getModel()
+                  .getNodes()
+                  .forEach(n =>
+                    n.registerListener({
+                      selectionChanged: e => {
+                        if (e.isSelected) {
+                          //@ts-ignore
+                          console.log("selChanged", e.entity.getState())
+                          setFocusedNode(e.entity)
+                          //@ts-ignore
+                          if (e.entity.getState()) {
+                            console.log("selectedNode")
+                            //@ts-ignore
+                            setSelectedNodeState(e.entity.getState())
+                          }
+                        }
+                      },
+                    })
+                  )
+                props.app.getDiagramEngine().repaintCanvas()
+              }}
+            >
+              Deserialize
+            </TrayButton>
+          </ButtonTray>
         </TrayWidget>
         <Layer
           onDrop={event => {
