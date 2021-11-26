@@ -15,11 +15,10 @@ export class RelationshipNodeFactory extends AbstractReactFactory<
   }
 
   generateModel(initialConfig: any) {
-    return new RelationshipModel({} as any)
+    return new RelationshipModel(initialConfig.initialConfig.extras)
   }
 
   generateReactWidget(event: any): JSX.Element {
-    console.log(event.model, this.engine)
     return (
       <Relationship
         engine={this.engine as DiagramEngine}

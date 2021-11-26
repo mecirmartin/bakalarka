@@ -16,7 +16,7 @@ export class EntityNodeFactory extends AbstractReactFactory<
 
   generateModel(initialConfig: any) {
     //TODO
-    return new EntityModel({} as any)
+    return new EntityModel(initialConfig.initialConfig.extras)
   }
 
   generateReactWidget(event: any): JSX.Element {

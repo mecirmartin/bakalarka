@@ -8,9 +8,10 @@ export class EntityModel extends NodeModel {
   constructor(entityState: EntityTrayState) {
     super({
       type: ENTITY,
+      extras: entityState,
     })
 
-    this.state = entityState
+    this.extras = entityState
 
     this.addPort(
       new BidirectionalPortModel({
@@ -38,25 +39,25 @@ export class EntityModel extends NodeModel {
     )
   }
 
-  private state: EntityTrayState
+  private extras: EntityTrayState
 
   serialize() {
     return {
       ...super.serialize(),
-      // You may need to transform these to be serializable
-      state: this.state,
+      extras: this.extras,
     }
   }
 
   deserialize(event: any) {
+    console.log("des", event)
     super.deserialize(event)
   }
 
   getState() {
-    return this.state
+    return this.extras
   }
 
   setState(state: EntityTrayState) {
-    this.state = state
+    this.extras = state
   }
 }

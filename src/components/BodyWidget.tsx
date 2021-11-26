@@ -2,6 +2,7 @@ import * as React from "react"
 import styled from "@emotion/styled"
 import { useEffect, useState } from "react"
 import { CanvasWidget } from "@projectstorm/react-canvas-core"
+import { LinkModel } from "@projectstorm/react-diagrams-core"
 
 import { TrayWidget } from "./TrayWidget"
 import { Application } from "../Application"
@@ -19,11 +20,6 @@ import { AttributeModel } from "../nodes/attribute/AttributeModel"
 import { AttributeTrayItemWidget } from "./AttributeTrayItemWidget"
 import { TrayItemWidget } from "./TrayItemWidget"
 import { TriangleNodeModel } from "../nodes/generalization-category/TriangleNodeModel"
-import { LinkModel, LinkModelGenerics } from "@projectstorm/react-diagrams-core"
-import {
-  DefaultLabelFactory,
-  DefaultLabelModel,
-} from "@projectstorm/react-diagrams-defaults"
 import { EditableLabelModel } from "../links/editable-label/EditableLabelModel"
 
 export interface BodyWidgetProps {
@@ -91,6 +87,8 @@ const useForceUpdate = () => {
   return () => setValue(value => value + 1) // update the state to force render
 }
 
+let serialized
+
 export let lineType: LineTypeState = "singleLine"
 
 export const BodyWidget: React.FC<BodyWidgetProps> = props => {
@@ -122,33 +120,10 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
     props.app.getDiagramEngine().repaintCanvas()
   }, [selectedNodeState])
 
-  useEffect(() => {
-    props.app
-      .getDiagramEngine()
-      .getModel()
-      .registerListener({
-        linksUpdated: e => {
-          console.log("links updated", e)
-          // e.link.addLabel(
-          //   new DefaultLabelModel({
-          //     label: "iijfjsdjfjk",
-          //     locked: true,
-          //   })
-          // )
-          // e.link.addLabel(new DefaultLabelModel({ label: "xxx" }))
-          // e.link.registerListener({
-          //   selectionChanged: e => console.log("selchanged", e),
-          // })
-        },
-      })
-  }, [])
-
   const addLabelToSelectedLinks = (links: LinkModel[]) => {
     links.forEach(l => {
-      console.log(l.getOptions())
       if (l.getOptions().selected) {
         l.addLabel(new EditableLabelModel())
-        console.log(l.getLabels())
       }
     })
     props.app.getDiagramEngine().repaintCanvas()
@@ -265,7 +240,47 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
               )
             }
           >
-            Clic
+            Click
+          </button>
+          <button
+            onClick={() => {
+              serialized = props.app.getDiagramEngine().getModel().serialize()
+            }}
+          >
+            Serialize
+          </button>
+          <button
+            onClick={() => {
+              console.log(serialized)
+              props.app
+                .getDiagramEngine()
+                .getModel()
+                .deserializeModel(serialized, props.app.getDiagramEngine())
+              props.app
+                .getDiagramEngine()
+                .getModel()
+                .getNodes()
+                .forEach(n =>
+                  n.registerListener({
+                    selectionChanged: e => {
+                      if (e.isSelected) {
+                        //@ts-ignore
+                        console.log("selChanged", e.entity.getState())
+                        setFocusedNode(e.entity)
+                        //@ts-ignore
+                        if (e.entity.getState()) {
+                          console.log("selectedNode")
+                          //@ts-ignore
+                          setSelectedNodeState(e.entity.getState())
+                        }
+                      }
+                    },
+                  })
+                )
+              props.app.getDiagramEngine().repaintCanvas()
+            }}
+          >
+            Deserialize
           </button>
         </TrayWidget>
         <Layer
@@ -286,33 +301,15 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
                 if (e.isSelected) {
                   setFocusedNode(e.entity)
                   //@ts-ignore
-                  if (e.entity.getState) {
+                  if (e.entity.getState()) {
                     //@ts-ignore
                     setSelectedNodeState(e.entity.getState())
                   }
                 }
               },
-              linksUpdated: e => console.log("links updated", e),
             })
 
             props.app.getDiagramEngine().getModel().addAll(node)
-            // props.app
-            //   .getDiagramEngine()
-            //   .getModel()
-            //   .registerListener({
-            //     linksUpdated: e => {
-            //       // e.link.addLabel(
-            //       //   new DefaultLabelModel({
-            //       //     label: "iijfjsdjfjk",
-            //       //     locked: true,
-            //       //   })
-            //       // )
-            //       e.link.addLabel(new DefaultLabelModel({ label: "xxx" }))
-            //       // e.link.registerListener({
-            //       //   selectionChanged: e => console.log("selchanged", e),
-            //       // })
-            //     },
-            //   })
             setFocusedNode(node)
 
             if (!(node instanceof TriangleNodeModel)) {

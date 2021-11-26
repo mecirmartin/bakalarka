@@ -85,7 +85,7 @@ export class Relationship extends React.Component<
           <CirclePort />
         </PortWidget>
         <RelationshipDiv isSelected={this.props.node.isSelected()}>
-          {this.props.relationshipState.isWeak ? (
+          {this.props.node.getState().isWeak ? (
             <div
               style={{
                 border: "3px solid #333",

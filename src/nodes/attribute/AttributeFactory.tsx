@@ -15,8 +15,8 @@ export class AttributeNodeFactory extends AbstractReactFactory<
   }
 
   generateModel(initialConfig: any) {
-    console.log("INITIAL CONFIG", initialConfig)
-    return new AttributeModel({} as any)
+    console.log("iconfig", initialConfig)
+    return new AttributeModel(initialConfig.initialConfig.extras)
   }
 
   generateReactWidget(event: any): JSX.Element {

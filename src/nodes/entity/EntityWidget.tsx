@@ -48,6 +48,12 @@ export class Entity extends React.Component<EntityProps, EntityState> {
   }
 
   render() {
+    console.log(
+      this.props.node.getOptions(),
+      this.props.node.getState().isWeak,
+      this.props.entityState,
+      this.props.node.getState()
+    )
     return (
       <EntityDiv isSelected={this.props.node.isSelected()}>
         <PortWidget
@@ -64,7 +70,8 @@ export class Entity extends React.Component<EntityProps, EntityState> {
         >
           <CirclePort />
         </PortWidget>
-        {this.props.entityState.isWeak ? (
+
+        {this.props.node.getState().isWeak ? (
           <WrapperDiv>
             <InlineEdit text={"Entity "} />
           </WrapperDiv>

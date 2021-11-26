@@ -8,9 +8,10 @@ export class AttributeModel extends NodeModel {
   constructor(attributeState: AttributeTrayState) {
     super({
       type: ATTRIBUTE,
+      extras: attributeState,
     })
 
-    this.state = attributeState
+    this.extras = attributeState
 
     // setup an in and out ports
     this.addPort(
@@ -35,21 +36,23 @@ export class AttributeModel extends NodeModel {
     )
   }
 
-  private state: AttributeTrayState
+  private extras: AttributeTrayState
 
   serialize() {
-    return { ...super.serialize(), state: this.state }
+    return { ...super.serialize(), state: this.extras }
   }
 
   deserialize(event: any) {
+    console.log("des", event)
     super.deserialize(event)
+    this.setState(event.data.extras)
   }
 
   getState() {
-    return this.state
+    return this.extras
   }
 
   setState(state: AttributeTrayState) {
-    this.state = state
+    this.extras = state
   }
 }

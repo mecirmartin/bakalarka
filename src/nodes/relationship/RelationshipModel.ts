@@ -8,9 +8,10 @@ export class RelationshipModel extends NodeModel {
   constructor(relationshipState: RelationshipTrayState) {
     super({
       type: RELATIONSHIP,
+      extras: relationshipState,
     })
 
-    this.state = relationshipState
+    this.extras = relationshipState
 
     // setup an in and out port
     this.addPort(
@@ -35,10 +36,10 @@ export class RelationshipModel extends NodeModel {
     )
   }
 
-  private state: RelationshipTrayState
+  private extras: RelationshipTrayState
 
   serialize() {
-    return { ...super.serialize(), state: this.state }
+    return { ...super.serialize(), extras: this.extras }
   }
 
   deserialize(event: any) {
@@ -46,10 +47,10 @@ export class RelationshipModel extends NodeModel {
   }
 
   getState() {
-    return this.state
+    return this.extras
   }
 
   setState(state: RelationshipTrayState) {
-    this.state = state
+    this.extras = state
   }
 }

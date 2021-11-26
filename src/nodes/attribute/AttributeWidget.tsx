@@ -92,16 +92,16 @@ export class Attribute extends React.Component<AttributeProps, AttributeState> {
           <CirclePort />
         </PortWidget>
 
-        {this.props.attributeState.type === "DERIVED" ? (
+        {this.props.node.getState().type === "DERIVED" ? (
           <DerivedAttributeDiv isSelected={this.props.node.isSelected()}>
             <InlineEdit text={"Attribute"} />
           </DerivedAttributeDiv>
-        ) : this.props.attributeState.type === "MULTIPLE_VALUE" ? (
+        ) : this.props.node.getState().type === "MULTIPLE_VALUE" ? (
           <AttributeDiv isSelected={this.props.node.isSelected()}>
             <MultipleValueAttributeDiv>
               <InlineEdit
                 text={"Attribute"}
-                attributeState={this.props.attributeState}
+                attributeState={this.props.node.getState()}
               />
             </MultipleValueAttributeDiv>
           </AttributeDiv>
@@ -109,7 +109,7 @@ export class Attribute extends React.Component<AttributeProps, AttributeState> {
           <AttributeDiv isSelected={this.props.node.isSelected()}>
             <InlineEdit
               text={"Attribute"}
-              attributeState={this.props.attributeState}
+              attributeState={this.props.node.getState()}
             />
           </AttributeDiv>
         )}
