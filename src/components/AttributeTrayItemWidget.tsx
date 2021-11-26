@@ -23,7 +23,6 @@ const SelectContainer = styled.div`
 
 export const AttributeTrayItemWidget: React.FC<AttributeTrayItemWidgetProps> =
   ({ model, name, color, setAttributeTrayState, attributeTrayState }) => {
-    console.log("ATTR", attributeTrayState)
     return (
       <Tray
         color={color}

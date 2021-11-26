@@ -3,7 +3,6 @@ import styled from "@emotion/styled"
 import { useEffect, useState } from "react"
 import { CanvasWidget } from "@projectstorm/react-canvas-core"
 import { LinkModel } from "@projectstorm/react-diagrams-core"
-import { saveAs } from "file-saver"
 
 import { TrayWidget } from "./TrayWidget"
 import { Application } from "../Application"
@@ -29,6 +28,7 @@ export interface BodyWidgetProps {
 
 export interface EntityTrayState {
   isWeak: boolean
+  value: string
 }
 
 export type RelationshipTrayState = EntityTrayState
@@ -45,6 +45,7 @@ export type LineTypeState =
 export interface AttributeTrayState {
   type: AttributeType
   key: KeyType
+  value: string
 }
 
 export const Body = styled.div`
@@ -110,8 +111,6 @@ const useForceUpdate = () => {
   return () => setValue(value => value + 1) // update the state to force render
 }
 
-let serialized
-
 export let lineType: LineTypeState = "singleLine"
 
 export const BodyWidget: React.FC<BodyWidgetProps> = props => {
@@ -120,18 +119,19 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
   const [selectedNodeState, setSelectedNodeState] = useState(null)
   const [entityTrayState, setEntityTrayState] = useState<EntityTrayState>({
     isWeak: false,
+    value: "",
   })
   const [relationshipTrayState, setRelationshipTrayState] =
     useState<RelationshipTrayState>({
       isWeak: false,
+      value: "",
     })
   const [attributeTrayState, setAttributeTrayState] =
     useState<AttributeTrayState>({
       type: "ATTRIBUTE",
       key: "NONE",
+      value: "",
     })
-
-  console.log(selectedNodeState)
 
   const [lineTypeState, setLineTypeState] =
     useState<LineTypeState>("singleLine")
@@ -146,7 +146,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
   const addLabelToSelectedLinks = (links: LinkModel[]) => {
     links.forEach(l => {
       if (l.getOptions().selected) {
-        l.addLabel(new EditableLabelModel())
+        l.addLabel(new EditableLabelModel({ value: "" }))
       }
     })
     props.app.getDiagramEngine().repaintCanvas()
@@ -161,10 +161,62 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
       case ATTRIBUTE:
         return new AttributeModel(attributeTrayState)
       case GENERALIZATION_CATEGORY:
-        return new TriangleNodeModel()
+        return new TriangleNodeModel({ value: "" })
       default:
         throw new Error("Unknown diagram node type")
     }
+  }
+
+  const handleSerialize = () => {
+    const serialized = props.app.getDiagramEngine().getModel().serialize()
+    const blob = new Blob([JSON.stringify(serialized)], {
+      type: "text/plain;charset=utf-8",
+    })
+
+    const href = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = href
+    link.download = "ErdDiagram.json"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const handleDeserialize = (serializedString: string) => {
+    const serialized = JSON.parse(serializedString)
+    props.app
+      .getDiagramEngine()
+      .getModel()
+      .deserializeModel(serialized, props.app.getDiagramEngine())
+    props.app
+      .getDiagramEngine()
+      .getModel()
+      .getNodes()
+      .forEach(n =>
+        n.registerListener({
+          selectionChanged: e => {
+            if (e.isSelected) {
+              //@ts-ignore
+              setFocusedNode(e.entity)
+              //@ts-ignore
+              if (e.entity.getState) {
+                //@ts-ignore
+                setSelectedNodeState(e.entity.getState())
+              }
+            }
+          },
+        })
+      )
+    props.app.getDiagramEngine().repaintCanvas()
+  }
+
+  const handleFileChosen = (file: File) => {
+    const fileReader = new FileReader()
+    fileReader.onloadend = () => {
+      const content = fileReader.result.toString()
+      handleDeserialize(content)
+    }
+    fileReader.readAsText(file)
   }
 
   return (
@@ -266,50 +318,21 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
             >
               Add label
             </TrayButton>
+            <TrayButton onClick={handleSerialize}>Serialize graph</TrayButton>
             <TrayButton
-              onClick={() => {
-                const serialized = props.app
-                  .getDiagramEngine()
-                  .getModel()
-                  .serialize()
-                saveAs(JSON.stringify(serialized), "serialized.txt")
-              }}
+              onClick={() =>
+                (document.querySelector("#file") as HTMLInputElement).click()
+              }
             >
-              Serialize graph
+              Deserialize graph
             </TrayButton>
-            <TrayButton
-              onClick={() => {
-                console.log(serialized)
-                props.app
-                  .getDiagramEngine()
-                  .getModel()
-                  .deserializeModel(serialized, props.app.getDiagramEngine())
-                props.app
-                  .getDiagramEngine()
-                  .getModel()
-                  .getNodes()
-                  .forEach(n =>
-                    n.registerListener({
-                      selectionChanged: e => {
-                        if (e.isSelected) {
-                          //@ts-ignore
-                          console.log("selChanged", e.entity.getState())
-                          setFocusedNode(e.entity)
-                          //@ts-ignore
-                          if (e.entity.getState()) {
-                            console.log("selectedNode")
-                            //@ts-ignore
-                            setSelectedNodeState(e.entity.getState())
-                          }
-                        }
-                      },
-                    })
-                  )
-                props.app.getDiagramEngine().repaintCanvas()
-              }}
-            >
-              Deserialize
-            </TrayButton>
+            <input
+              type="file"
+              id="file"
+              style={{ display: "none" }}
+              accept=".json,.txt"
+              onChange={e => handleFileChosen(e.target.files[0])}
+            />
           </ButtonTray>
         </TrayWidget>
         <Layer

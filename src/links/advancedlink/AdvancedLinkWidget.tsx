@@ -79,7 +79,6 @@ export class AdvancedLinkWidget extends DefaultLinkWidget {
   }
 
   render() {
-    console.log(this.props)
     //ensure id is present for all points on the path
     var points = this.props.link.getPoints()
     var paths = []
@@ -111,10 +110,6 @@ export class AdvancedLinkWidget extends DefaultLinkWidget {
     }
 
     if (this.props.link.getTargetPort() !== null) {
-      console.log(
-        this.props.link.getRenderedPath().length,
-        this.props.link.getRenderedPath()
-      )
       paths.push(
         this.generateArrow(points[points.length - 1], points[points.length - 2])
       )

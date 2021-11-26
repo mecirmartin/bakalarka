@@ -16,8 +16,8 @@ export class EditableLabelFactory extends AbstractReactFactory<
     super("editable-label")
   }
 
-  generateModel(): EditableLabelModel {
-    return new EditableLabelModel()
+  generateModel(initialConfig): EditableLabelModel {
+    return new EditableLabelModel({ value: "" })
   }
 
   generateReactWidget(

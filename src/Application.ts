@@ -43,30 +43,6 @@ export class Application {
   public newModel() {
     this.activeModel = new SRD.DiagramModel()
     this.diagramEngine.setModel(this.activeModel)
-    // this.activeModel.registerListener({
-    //   selectionChanged: e => console.log("nodesUpdated", e),
-    //   // linksUpdated: e => console.log("linksUpdated", e),
-    // })
-
-    // // //3-A) create a default node
-    // var node1 = new SRD.DefaultNodeModel("Node 1", "rgb(0,192,255)")
-    // let port = node1.addOutPort("Out")
-    // node1.setPosition(100, 100)
-
-    // //3-B) create another default node
-    // var node2 = new SRD.DefaultNodeModel("Node 2", "rgb(192,255,0)")
-    // let port2 = node2.addInPort("In")
-    // node2.setPosition(400, 100)
-    // //TODO
-    // // node1.setPosition(50, 50)
-
-    // const link1 = new DefaultLinkModel()
-    // link1.addLabel(new DefaultLabelModel({ label: "xx", offsetX: 32 }))
-    // // node1.getPort("left").addLink(node2.)
-    // link1.setSourcePort(node1.getPort("Out"))
-    // link1.setTargetPort(node2.getPort("In"))
-
-    // this.activeModel.addAll(node1, link1, node2)
   }
 
   public getActiveDiagram(): SRD.DiagramModel | null {

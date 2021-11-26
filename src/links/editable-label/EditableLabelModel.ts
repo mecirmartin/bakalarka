@@ -5,29 +5,37 @@ import {
 } from "@projectstorm/react-canvas-core"
 
 export interface EditableLabelOptions extends BaseModelOptions {
-  value?: string
+  extras?: string
 }
 
 export class EditableLabelModel extends LabelModel {
-  value: string
+  private extras: string
 
-  constructor(options: EditableLabelOptions = {}) {
+  constructor(labelState: { value: string }) {
     super({
-      ...options,
+      ...labelState,
       type: "editable-label",
     })
-    this.value = options.value || ""
+    this.extras = labelState.value || "Label"
   }
 
   serialize() {
     return {
       ...super.serialize(),
-      value: this.value,
+      extras: this.extras,
     }
+  }
+
+  setState(extras: string) {
+    this.extras = extras
+  }
+
+  getState() {
+    return this.extras
   }
 
   deserialize(event: DeserializeEvent<this>): void {
     super.deserialize(event)
-    this.value = event.data.value
+    this.extras = event.data.extras
   }
 }

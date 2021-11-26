@@ -14,7 +14,9 @@ export interface AttributeProps {
   attributeState: AttributeTrayState
 }
 
-export interface AttributeState {}
+export interface AttributeState {
+  value: string
+}
 
 export const AttributeDiv = styled.div<{ isSelected: boolean }>`
   box-shadow: ${props =>
@@ -58,9 +60,20 @@ const MultipleValueAttributeDiv = styled.div`
 export class Attribute extends React.Component<AttributeProps, AttributeState> {
   constructor(props: AttributeProps & AttributeState) {
     super(props)
+    this.state = {
+      value: this.props.node.getState().value || "Attribute",
+    }
+    this.setState = this.setState.bind(this)
   }
+
+  componentDidUpdate() {
+    this.props.node.setState({
+      ...this.props.node.getState(),
+      value: this.state.value,
+    })
+  }
+
   render() {
-    console.log(this.props)
     return (
       <div>
         <PortWidget
@@ -94,13 +107,14 @@ export class Attribute extends React.Component<AttributeProps, AttributeState> {
 
         {this.props.node.getState().type === "DERIVED" ? (
           <DerivedAttributeDiv isSelected={this.props.node.isSelected()}>
-            <InlineEdit text={"Attribute"} />
+            <InlineEdit state={this.state} setState={this.setState} />
           </DerivedAttributeDiv>
         ) : this.props.node.getState().type === "MULTIPLE_VALUE" ? (
           <AttributeDiv isSelected={this.props.node.isSelected()}>
             <MultipleValueAttributeDiv>
               <InlineEdit
-                text={"Attribute"}
+                state={this.state}
+                setState={this.setState}
                 attributeState={this.props.node.getState()}
               />
             </MultipleValueAttributeDiv>
@@ -108,7 +122,8 @@ export class Attribute extends React.Component<AttributeProps, AttributeState> {
         ) : (
           <AttributeDiv isSelected={this.props.node.isSelected()}>
             <InlineEdit
-              text={"Attribute"}
+              state={this.state}
+              setState={this.setState}
               attributeState={this.props.node.getState()}
             />
           </AttributeDiv>

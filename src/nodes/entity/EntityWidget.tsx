@@ -14,7 +14,9 @@ export interface EntityProps {
   entityState: EntityTrayState
 }
 
-export interface EntityState {}
+export interface EntityState {
+  value: string
+}
 
 export const EntityDiv = styled.div<{ isSelected: boolean }>`
   position: relative;
@@ -45,15 +47,20 @@ const WrapperDiv = styled.div`
 export class Entity extends React.Component<EntityProps, EntityState> {
   constructor(props: EntityProps & EntityState) {
     super(props)
+    this.state = {
+      value: this.props.node.getState().value || "Entity",
+    }
+    this.setState = this.setState.bind(this)
+  }
+
+  componentDidUpdate() {
+    this.props.node.setState({
+      ...this.props.node.getState(),
+      value: this.state.value,
+    })
   }
 
   render() {
-    console.log(
-      this.props.node.getOptions(),
-      this.props.node.getState().isWeak,
-      this.props.entityState,
-      this.props.node.getState()
-    )
     return (
       <EntityDiv isSelected={this.props.node.isSelected()}>
         <PortWidget
@@ -73,10 +80,10 @@ export class Entity extends React.Component<EntityProps, EntityState> {
 
         {this.props.node.getState().isWeak ? (
           <WrapperDiv>
-            <InlineEdit text={"Entity "} />
+            <InlineEdit state={this.state} setState={this.setState} />
           </WrapperDiv>
         ) : (
-          <InlineEdit text={"Entity "} />
+          <InlineEdit state={this.state} setState={this.setState} />
         )}
         <PortWidget
           engine={this.props.engine}

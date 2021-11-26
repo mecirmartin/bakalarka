@@ -6,11 +6,13 @@ interface InlineEditState {
   html: string
 }
 interface InlineEditProps {
-  text: string
+  text?: string
   bold?: boolean
   marginTop?: number
   attributeState?: AttributeTrayState
   style?: Object
+  state?: { value: string }
+  setState?: Function
 }
 
 export class InlineEdit extends React.Component<
@@ -19,15 +21,11 @@ export class InlineEdit extends React.Component<
 > {
   constructor(props) {
     super(props)
-    this.state = {
-      html: this.props.bold
-        ? `<b>${this.props.text}</b>`
-        : `<p>${this.props.text}</p>`,
-    }
-  }
-
-  handleChange = evt => {
-    this.setState({ html: evt.target.value })
+    // this.state = {
+    //   html: this.props.bold
+    //     ? `<b>${this.props.text}</b>`
+    //     : `<p>${this.props.text}</p>`,
+    // }
   }
 
   render = () => {
@@ -51,9 +49,9 @@ export class InlineEdit extends React.Component<
                 : "none",
           }
         }
-        html={this.state.html} // innerHTML of the editable div
+        html={this.props.state.value} // innerHTML of the editable div
         disabled={false} // use true to disable edition
-        onChange={this.handleChange} // handle innerHTML change
+        onChange={e => this.props.setState({ value: e.target.value })} // handle innerHTML change
         onKeyDown={e => e.stopPropagation()}
       />
     )

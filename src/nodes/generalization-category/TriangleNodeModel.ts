@@ -10,24 +10,37 @@ export interface TriangleNodeModelOptions extends BaseModelOptions {
 export class TriangleNodeModel extends NodeModel {
   color: string
 
-  constructor(options: TriangleNodeModelOptions = {}) {
-    super({ ...options, type: GENERALIZATION_CATEGORY })
-    this.color = options.color || "red"
+  constructor(triangleState) {
+    super({
+      type: GENERALIZATION_CATEGORY,
+      extras: triangleState,
+    })
+
+    this.extras = triangleState
 
     // setup an in and out port
     this.addPort(new BidirectionalPortModel({ name: "top" }))
     this.addPort(new BidirectionalPortModel({ name: "bottom" }))
   }
 
+  private extras: { value: string }
+
   serialize() {
     return {
       ...super.serialize(),
-      color: this.color,
+      extras: this.extras,
     }
   }
 
-  deserialize(event): void {
+  deserialize(event: any) {
     super.deserialize(event)
-    this.color = event.data.color
+  }
+
+  getState() {
+    return this.extras
+  }
+
+  setState(state: { value: string }) {
+    this.extras = state
   }
 }

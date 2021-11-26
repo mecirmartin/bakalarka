@@ -49,7 +49,6 @@ export class EntityModel extends NodeModel {
   }
 
   deserialize(event: any) {
-    console.log("des", event)
     super.deserialize(event)
   }
 

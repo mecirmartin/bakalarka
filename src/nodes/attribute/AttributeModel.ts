@@ -43,7 +43,6 @@ export class AttributeModel extends NodeModel {
   }
 
   deserialize(event: any) {
-    console.log("des", event)
     super.deserialize(event)
     this.setState(event.data.extras)
   }

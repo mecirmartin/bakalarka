@@ -14,7 +14,9 @@ export interface RelationshipProps {
   relationshipState: RelationshipTrayState
 }
 
-export interface RelationshipState {}
+export interface RelationshipState {
+  value: string
+}
 
 export const RelationshipDiv = styled.div<{ isSelected: boolean }>`
   box-shadow: ${props =>
@@ -47,6 +49,18 @@ export class Relationship extends React.Component<
 > {
   constructor(props: RelationshipProps & RelationshipState) {
     super(props)
+
+    this.state = {
+      value: this.props.node.getState().value || "Entity",
+    }
+    this.setState = this.setState.bind(this)
+  }
+
+  componentDidUpdate() {
+    this.props.node.setState({
+      ...this.props.node.getState(),
+      value: this.state.value,
+    })
   }
 
   render() {
@@ -95,12 +109,12 @@ export class Relationship extends React.Component<
               }}
             >
               <WrapperDiv>
-                <InlineEdit text={"Relationship"} />
+                <InlineEdit state={this.state} setState={this.setState} />
               </WrapperDiv>
             </div>
           ) : (
             <WrapperDiv>
-              <InlineEdit text={"Relationship"} />
+              <InlineEdit state={this.state} setState={this.setState} />
             </WrapperDiv>
           )}
         </RelationshipDiv>

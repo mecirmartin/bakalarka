@@ -14,7 +14,7 @@ export class TriangleNodeFactory extends AbstractReactFactory<
   }
 
   generateModel(initialConfig) {
-    return new TriangleNodeModel()
+    return new TriangleNodeModel(initialConfig.initialConfig.extras)
   }
 
   generateReactWidget(event): JSX.Element {

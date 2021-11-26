@@ -3,6 +3,7 @@ import * as React from "react"
 import { EditableLabelModel } from "./EditableLabelModel"
 import styled from "@emotion/styled"
 import { InlineEdit } from "../../components/inline-edit/InlineEdit"
+import { useEffect, useState } from "react"
 
 export interface FlowAliasLabelWidgetProps {
   model: EditableLabelModel
@@ -16,23 +17,16 @@ export const Label = styled.div`
 // now we can render all what we want in the label
 export const EditableLabelWidget: React.FunctionComponent<FlowAliasLabelWidgetProps> =
   props => {
-    const [str, setStr] = React.useState(props.model.value)
+    const [state, setState] = useState({
+      value: props.model.getState() || "Label",
+    })
+
+    useEffect(() => {
+      props.model.setState(state.value)
+    }, [state])
 
     return (
       <Label>
-        {/* <input
-          value={str}
-          onChange={event => {
-            const newVal = event.target.value
-
-            // update value both in internal component state
-            setStr(newVal)
-            // and in model object
-            props.model.value = newVal
-          }}
-        />
-
-        <button onClick={() => console.log("clicked")}>Click me!</button> */}
         <InlineEdit
           style={{
             color: "#fff",
@@ -41,7 +35,8 @@ export const EditableLabelWidget: React.FunctionComponent<FlowAliasLabelWidgetPr
             borderRadius: "0.3rem",
             fontSize: "1rem",
           }}
-          text={"Label"}
+          state={state}
+          setState={setState}
         />
       </Label>
     )

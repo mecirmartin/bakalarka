@@ -64,7 +64,12 @@ export const EntityTrayItemWidget: React.FC<EntityTrayItemWidgetProps> = ({
       <CustomCheckbox
         id="type"
         type="checkbox"
-        onChange={e => setEntityTrayState({ isWeak: e.target.checked })}
+        onChange={e =>
+          setEntityTrayState(entityTrayState => ({
+            ...entityTrayState,
+            isWeak: e.target.checked,
+          }))
+        }
         checked={state?.isWeak}
       />
     </ButtonTray>
