@@ -8,16 +8,33 @@ export class BidirectionalPortModel extends DefaultPortModel {
     return true
   }
   createLinkModel() {
+    let link: SimpleLinkModel | AdvancedLinkModel
     if (lineType === "singleLine" || lineType === "multiLine") {
-      const linkModel = new SimpleLinkModel(lineType)
-
-      return linkModel
+      link = new SimpleLinkModel(lineType)
     } else if (
       lineType === "aggregation" ||
       lineType === "composition" ||
       lineType === "nonTransferableRelationship"
     ) {
-      return new AdvancedLinkModel(lineType)
+      link = new AdvancedLinkModel(lineType)
     }
+
+    link.registerListener({
+      eventDidFire: e => {
+        try {
+          //@ts-ignore
+          if (e.function === "selectionChanged" && e.isSelected) {
+            link.setPoints([
+              link.getFirstPoint(),
+              link.generatePoint(this.getPosition().x, this.getPosition().y),
+            ])
+          }
+        } catch (error) {
+          console.log("Error trying to generate link position")
+        }
+      },
+    })
+
+    return link
   }
 }

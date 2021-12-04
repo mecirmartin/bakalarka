@@ -18,7 +18,7 @@ export const Label = styled.div`
 export const EditableLabelWidget: React.FunctionComponent<FlowAliasLabelWidgetProps> =
   props => {
     const [state, setState] = useState({
-      value: props.model.getState() || "Label",
+      value: props.model.getState() || "Role",
     })
 
     useEffect(() => {

@@ -9,6 +9,7 @@ import { States } from "./state/States"
 import { DefaultDiagramState } from "@projectstorm/react-diagrams"
 import { SimpleLinkFactory } from "./links/simplelink/SimpleLinkFactory"
 import { EditableLabelFactory } from "./links/editable-label/EditableLabelFactory"
+import Zoomaction from "./helpers/zoom"
 
 export class Application {
   protected activeModel: SRD.DiagramModel
@@ -16,8 +17,10 @@ export class Application {
 
   constructor() {
     this.activeModel = null
-    this.diagramEngine = SRD.default()
+    this.diagramEngine = SRD.default({ registerDefaultZoomCanvasAction: false })
     this.newModel()
+    this.diagramEngine.getActionEventBus().registerAction(new Zoomaction())
+
     // Register factory
     const factoriesManager = this.diagramEngine.getNodeFactories()
     factoriesManager.registerFactory(new EntityNodeFactory())

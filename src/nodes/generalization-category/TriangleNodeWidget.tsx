@@ -15,8 +15,8 @@ export interface TriangleNodeWidgetState {
 }
 
 const TriangleNode = styled.div<{ isSelected: boolean }>`
-  box-shadow: ${props =>
-    props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none"};
+  filter: ${props =>
+    props.isSelected ? "drop-shadow(0 0 5px rgb(0, 192, 255))" : " none"};
   position: relative;
   width: 0;
   border-bottom: solid 80px black;
@@ -41,7 +41,7 @@ export class TriangleNodeWidget extends React.Component<
   constructor(props: TriangleNodeWidgetProps) {
     super(props)
     this.state = {
-      value: this.props.node.getState().value || "Attribute",
+      value: this.props.node.getState().value || "d",
     }
     this.setState = this.setState.bind(this)
   }
@@ -71,7 +71,7 @@ export class TriangleNodeWidget extends React.Component<
         >
           <CirclePort />
         </PortWidget>
-        <div style={{ position: "absolute", top: 40, right: -6 }}>
+        <div style={{ position: "absolute", top: 40, right: -24 }}>
           <InlineEdit state={this.state} setState={this.setState} text={"d"} />
         </div>
       </TriangleNode>

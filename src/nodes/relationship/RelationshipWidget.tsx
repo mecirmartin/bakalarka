@@ -51,7 +51,7 @@ export class Relationship extends React.Component<
     super(props)
 
     this.state = {
-      value: this.props.node.getState().value || "Entity",
+      value: this.props.node.getState().value || "Relationship",
     }
     this.setState = this.setState.bind(this)
   }

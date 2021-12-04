@@ -21,11 +21,6 @@ export class InlineEdit extends React.Component<
 > {
   constructor(props) {
     super(props)
-    // this.state = {
-    //   html: this.props.bold
-    //     ? `<b>${this.props.text}</b>`
-    //     : `<p>${this.props.text}</p>`,
-    // }
   }
 
   render = () => {
@@ -35,6 +30,7 @@ export class InlineEdit extends React.Component<
           this.props.style ?? {
             fontSize: "1.4rem",
             textAlign: "center",
+            minWidth: "3rem",
             marginTop: this.props.marginTop,
             textDecoration:
               this.props.attributeState?.key === "PRIMARY_KEY" ||

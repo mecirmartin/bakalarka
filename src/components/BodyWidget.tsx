@@ -357,6 +357,8 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
                     //@ts-ignore
                     setSelectedNodeState(e.entity.getState())
                   }
+                } else {
+                  setFocusedNode(null)
                 }
               },
             })
