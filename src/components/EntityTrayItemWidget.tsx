@@ -51,9 +51,9 @@ export const EntityTrayItemWidget: React.FC<EntityTrayItemWidgetProps> = ({
   <Tray
     color={color}
     draggable={true}
-    onDragStart={event => {
+    onDragStart={event =>
       event.dataTransfer.setData("storm-diagram-node", JSON.stringify(model))
-    }}
+    }
     className="tray-item"
   >
     {name}

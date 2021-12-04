@@ -60,14 +60,14 @@ export class TriangleNodeWidget extends React.Component<
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("top")}
-          style={{ position: "absolute", top: "-4px", right: "8px" }}
+          style={{ position: "absolute", top: -6, right: -8 }}
         >
           <CirclePort />
         </PortWidget>
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("bottom")}
-          style={{ position: "absolute", top: "69px", right: "8px" }}
+          style={{ position: "absolute", top: 71, right: -8 }}
         >
           <CirclePort />
         </PortWidget>

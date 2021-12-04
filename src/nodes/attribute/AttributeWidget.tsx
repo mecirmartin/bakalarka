@@ -79,28 +79,28 @@ export class Attribute extends React.Component<AttributeProps, AttributeState> {
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("left")!}
-          style={{ position: "absolute", left: "-4%", top: "42%" }}
+          style={{ position: "absolute", left: "-5%", top: "40%", zIndex: 2 }}
         >
           <CirclePort />
         </PortWidget>
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("top")!}
-          style={{ position: "absolute", right: "56%", top: "-8%" }}
+          style={{ position: "absolute", right: "45%", top: "-10%", zIndex: 2 }}
         >
           <CirclePort />
         </PortWidget>
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("bottom")!}
-          style={{ position: "absolute", right: "56%", top: "87%" }}
+          style={{ position: "absolute", right: "45%", top: "87%", zIndex: 2 }}
         >
           <CirclePort />
         </PortWidget>
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("right")!}
-          style={{ position: "absolute", right: "7%", top: "42%" }}
+          style={{ position: "absolute", right: "-5%", top: "40%", zIndex: 2 }}
         >
           <CirclePort />
         </PortWidget>

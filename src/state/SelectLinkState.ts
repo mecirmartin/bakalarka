@@ -11,8 +11,8 @@ export default class SelectLinkState extends AbstractDisplacementState {
     this.registerAction(
       new Action({
         type: InputType.MOUSE_DOWN,
-        fire: event => {
-          const link = this.engine.getMouseElement(event.event as any)
+        fire: (event: any) => {
+          const link = this.engine.getMouseElement(event.event)
 
           if (link.isLocked()) {
             this.eject()

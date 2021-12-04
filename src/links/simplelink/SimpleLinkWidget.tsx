@@ -30,7 +30,7 @@ export class SimpleLinkWidget extends DefaultLinkWidget {
       paths.push(this.generatePoint(points[i]))
     }
 
-    paths.push(this.generatePoint(points[points.length - 1]))
+    // paths.push(this.generatePoint(points[points.length - 1]))
 
     const linkPaths = paths.filter(p => p.props.link)
     const pointPaths = paths.filter(p => p.props.point)

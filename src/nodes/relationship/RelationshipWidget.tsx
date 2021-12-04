@@ -73,6 +73,7 @@ export class Relationship extends React.Component<
             position: "absolute",
             left: "-23%",
             top: "43%",
+            zIndex: 2,
           }}
         >
           <CirclePort />
@@ -80,21 +81,36 @@ export class Relationship extends React.Component<
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("right")!}
-          style={{ position: "absolute", right: "-10.5%", top: "43%" }}
+          style={{
+            position: "absolute",
+            right: "-23.5%",
+            top: "43%",
+            zIndex: 2,
+          }}
         >
           <CirclePort />
         </PortWidget>
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("top")!}
-          style={{ position: "absolute", right: "56%", top: "-23.5%" }}
+          style={{
+            position: "absolute",
+            right: "44%",
+            top: "-26.5%",
+            zIndex: 2,
+          }}
         >
           <CirclePort />
         </PortWidget>
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("bottom")!}
-          style={{ position: "absolute", right: "56%", top: "110.5%" }}
+          style={{
+            position: "absolute",
+            right: "44%",
+            top: "112.5%",
+            zIndex: 2,
+          }}
         >
           <CirclePort />
         </PortWidget>

@@ -73,7 +73,7 @@ export class Entity extends React.Component<EntityProps, EntityState> {
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("top")!}
-          style={{ position: "absolute", top: "-10%", right: "54%" }}
+          style={{ position: "absolute", top: "-10%", right: "47%" }}
         >
           <CirclePort />
         </PortWidget>
@@ -88,14 +88,14 @@ export class Entity extends React.Component<EntityProps, EntityState> {
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("right")!}
-          style={{ position: "absolute", top: "44%", right: "2.5%" }}
+          style={{ position: "absolute", top: "44%", right: "-3.5%" }}
         >
           <CirclePort />
         </PortWidget>
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("bottom")!}
-          style={{ position: "absolute", top: "94%", right: "54%" }}
+          style={{ position: "absolute", top: "94%", right: "47%" }}
         >
           <CirclePort />
         </PortWidget>

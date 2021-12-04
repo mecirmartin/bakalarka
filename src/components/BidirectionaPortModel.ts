@@ -19,21 +19,21 @@ export class BidirectionalPortModel extends DefaultPortModel {
       link = new AdvancedLinkModel(lineType)
     }
 
-    link.registerListener({
-      eventDidFire: e => {
-        try {
-          //@ts-ignore
-          if (e.function === "selectionChanged" && e.isSelected) {
-            link.setPoints([
-              link.getFirstPoint(),
-              link.generatePoint(this.getPosition().x, this.getPosition().y),
-            ])
-          }
-        } catch (error) {
-          console.log("Error trying to generate link position")
-        }
-      },
-    })
+    // link.registerListener({
+    //   eventDidFire: e => {
+    //     try {
+    //       //@ts-ignore
+    //       if (e.function === "selectionChanged" && e.isSelected) {
+    //         link.setPoints([
+    //           link.getFirstPoint(),
+    //           link.generatePoint(this.getPosition().x, this.getPosition().y),
+    //         ])
+    //       }
+    //     } catch (error) {
+    //       console.log("Error trying to generate link position")
+    //     }
+    //   },
+    // })
 
     return link
   }
