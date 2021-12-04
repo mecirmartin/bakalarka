@@ -277,6 +277,28 @@ export const BodyWidget: React.FC<BodyWidgetProps> = props => {
               </option>
             </select>
           </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "0.5rem",
+              color: "#fff",
+            }}
+          >
+            <label htmlFor="add-points">Add line points</label>
+            <input
+              name="add-points"
+              type="checkbox"
+              style={{ marginLeft: "0.3rem" }}
+              onChange={e => {
+                props.app.getDiagramEngine().maxNumberPointsPerLink = e.target
+                  .checked
+                  ? 100000
+                  : 0
+              }}
+            />
+          </div>
 
           <TrayHeader>Selected Node</TrayHeader>
           {focusedNode instanceof EntityModel && (

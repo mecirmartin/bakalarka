@@ -2,6 +2,7 @@ import * as React from "react"
 import styled from "@emotion/styled"
 import { DiagramNodeType } from "../helpers/nodeTypes"
 import { EntityTrayState } from "./BodyWidget"
+import EntityPng from "./node-images/Entity.png"
 
 export interface EntityTrayItemWidgetProps {
   model: DiagramNodeType
@@ -51,13 +52,21 @@ export const EntityTrayItemWidget: React.FC<EntityTrayItemWidgetProps> = ({
   <Tray
     color={color}
     draggable={true}
-    onDragStart={event =>
-      event.dataTransfer.setData("storm-diagram-node", JSON.stringify(model))
-    }
+    onDragStart={e => {
+      const image = document.getElementById("drag-entity")
+      e.dataTransfer.setDragImage(image, 100, 50)
+      e.dataTransfer.setData("storm-diagram-node", JSON.stringify(model))
+    }}
     className="tray-item"
   >
     {name}
     <ButtonTray>
+      <img
+        src={EntityPng}
+        width="100"
+        style={{ width: 100, position: "absolute", left: -100 }}
+        id="drag-entity"
+      />
       <CustomLabel htmlFor="type">
         {name === "Entity" ? "Weak" : "Identification"}
       </CustomLabel>

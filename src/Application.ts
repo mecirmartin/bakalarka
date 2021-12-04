@@ -20,6 +20,7 @@ export class Application {
     this.diagramEngine = SRD.default({ registerDefaultZoomCanvasAction: false })
     this.newModel()
     this.diagramEngine.getActionEventBus().registerAction(new Zoomaction())
+    this.diagramEngine.maxNumberPointsPerLink = 0
 
     // Register factory
     const factoriesManager = this.diagramEngine.getNodeFactories()
