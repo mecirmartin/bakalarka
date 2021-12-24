@@ -1,8 +1,9 @@
 import * as React from "react"
 import styled from "@emotion/styled"
-import { DiagramNodeType } from "../helpers/nodeTypes"
+import { DiagramNodeType, ENTITY } from "../helpers/nodeTypes"
 import { EntityTrayState } from "./BodyWidget"
 import EntityPng from "./node-images/Entity.png"
+import RelationshipPng from "./node-images/Relationship.png"
 
 export interface EntityTrayItemWidgetProps {
   model: DiagramNodeType
@@ -53,8 +54,12 @@ export const EntityTrayItemWidget: React.FC<EntityTrayItemWidgetProps> = ({
     color={color}
     draggable={true}
     onDragStart={e => {
-      const image = document.getElementById("drag-entity")
-      e.dataTransfer.setDragImage(image, 100, 50)
+      let image
+      console.log(model)
+      if (model === ENTITY) image = document.getElementById("drag-entity")
+      else image = document.getElementById("drag-relationship")
+
+      e.dataTransfer.setDragImage(image, 100, 200)
       e.dataTransfer.setData("storm-diagram-node", JSON.stringify(model))
     }}
     className="tray-item"
@@ -66,6 +71,12 @@ export const EntityTrayItemWidget: React.FC<EntityTrayItemWidgetProps> = ({
         width="100"
         style={{ width: 100, position: "absolute", left: -100 }}
         id="drag-entity"
+      />
+      <img
+        src={RelationshipPng}
+        width="100"
+        style={{ width: 100, position: "absolute", right: -100, top: 50 }}
+        id="drag-relationship"
       />
       <CustomLabel htmlFor="type">
         {name === "Entity" ? "Weak" : "Identification"}

@@ -16,7 +16,7 @@ export class EditableLabelModel extends LabelModel {
       ...labelState,
       type: "editable-label",
     })
-    this.extras = labelState.value || "Label"
+    this.extras = labelState.value || "Role"
   }
 
   serialize() {

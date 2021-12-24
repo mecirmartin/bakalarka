@@ -3,6 +3,7 @@ import "./index.css"
 
 import App from "./App"
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => 
   ReactDOM.render(<App />, document.getElementById("root"))
-})
+)
+

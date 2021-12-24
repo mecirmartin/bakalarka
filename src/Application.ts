@@ -38,7 +38,7 @@ export class Application {
     this.diagramEngine
       .getLabelFactories()
       .registerFactory(new EditableLabelFactory())
-    // this.diagramEngine.getStateMachine().pushState(new States())
+    this.diagramEngine.getStateMachine().pushState(new States())
     const state = this.diagramEngine.getStateMachine().getCurrentState()
 
     ;(state as DefaultDiagramState).dragNewLink.config.allowLooseLinks = false
