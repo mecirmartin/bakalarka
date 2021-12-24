@@ -1,7 +1,7 @@
 import * as React from "react"
 import styled from "@emotion/styled"
 import { DiagramNodeType, ENTITY } from "../helpers/nodeTypes"
-import { EntityTrayState } from "./BodyWidget"
+import { EntityTrayState } from "../types"
 import EntityPng from "./node-images/Entity.png"
 import RelationshipPng from "./node-images/Relationship.png"
 
@@ -9,6 +9,8 @@ export interface EntityTrayItemWidgetProps {
   model: DiagramNodeType
   name: string
   setEntityTrayState: React.Dispatch<React.SetStateAction<EntityTrayState>>
+  setSelectedDiv?: (model: DiagramNodeType) => void
+  isSelected?: boolean
   state?: EntityTrayState
   color?: string
 }
@@ -49,6 +51,8 @@ export const EntityTrayItemWidget: React.FC<EntityTrayItemWidgetProps> = ({
   color,
   state,
   setEntityTrayState,
+  isSelected,
+  setSelectedDiv,
 }) => (
   <Tray
     color={color}
@@ -63,6 +67,8 @@ export const EntityTrayItemWidget: React.FC<EntityTrayItemWidgetProps> = ({
       e.dataTransfer.setData("storm-diagram-node", JSON.stringify(model))
     }}
     className="tray-item"
+    onClick={() => (!isSelected ? setSelectedDiv(model) : setSelectedDiv(null))}
+    style={{ backgroundColor: isSelected && "rgb(0,192,255)" }}
   >
     {name}
     <ButtonTray>

@@ -4,11 +4,11 @@ import { CanvasWidget } from "@projectstorm/react-canvas-core"
 import { LinkModel } from "@projectstorm/react-diagrams-core"
 
 import { TrayWidget } from "./TrayWidget"
-import { Application } from "../Application"
 import { EntityTrayItemWidget } from "./EntityTrayItemWidget"
 import { DemoCanvasWidget } from "../helpers/DemoCanvasWidget"
 import {
   ATTRIBUTE,
+  DiagramNodeType,
   ENTITY,
   GENERALIZATION_CATEGORY,
   RELATIONSHIP,
@@ -29,33 +29,13 @@ import {
   TrayButton,
   TrayHeader,
 } from "./BodyWidgetComponents"
-
-export interface BodyWidgetProps {
-  app: Application
-  ref: any
-}
-
-export interface EntityTrayState {
-  isWeak: boolean
-  value: string
-}
-
-export type RelationshipTrayState = EntityTrayState
-
-export type AttributeType = "ATTRIBUTE" | "MULTIPLE_VALUE" | "DERIVED"
-export type KeyType = "NONE" | "PRIMARY_KEY" | "PARTIAL_KEY"
-export type LineTypeState =
-  | "singleLine"
-  | "multiLine"
-  | "aggregation"
-  | "composition"
-  | "nonTransferableRelationship"
-
-export interface AttributeTrayState {
-  type: AttributeType
-  key: KeyType
-  value: string
-}
+import {
+  LineTypeState,
+  BodyWidgetProps,
+  EntityTrayState,
+  RelationshipTrayState,
+  AttributeTrayState,
+} from "../types"
 
 const useForceUpdate = () => {
   const [_, setValue] = useState(0) // integer state
@@ -65,7 +45,7 @@ const useForceUpdate = () => {
 export let lineType: LineTypeState = "singleLine"
 
 export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
-  (props, ref) => {
+  ({ app }, ref) => {
     const forceUpdate = useForceUpdate()
     const [focusedNode, setFocusedNode] = useState(null)
     const [selectedNodeState, setSelectedNodeState] = useState(null)
@@ -87,12 +67,13 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
     const [lineTypeState, setLineTypeState] =
       useState<LineTypeState>("singleLine")
     const [shiftPressed, setShiftPressed] = useState(false)
+    const [selectedDiv, setSelectedDiv] = useState<DiagramNodeType | null>(null)
 
     useEffect(() => {
       if (!focusedNode) return
       focusedNode.setState(selectedNodeState)
 
-      props.app.getDiagramEngine().repaintCanvas()
+      app.getDiagramEngine().repaintCanvas()
     }, [selectedNodeState])
 
     // The component instance will be extended
@@ -100,15 +81,14 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
     // as the second argument
     useImperativeHandle(ref, () => ({ handleDeserialize, handleSerialize }))
 
-    const setMaxPointsOnLine = (maxNumber: number) => {
-      props.app.getDiagramEngine().setMaxNumberPointsPerLink(maxNumber)
-    }
+    const setMaxPointsOnLine = (maxNumber: number) =>
+      app.getDiagramEngine().setMaxNumberPointsPerLink(maxNumber)
 
     useEffect(() => {
       if (shiftPressed) setMaxPointsOnLine(1000)
       else setMaxPointsOnLine(0)
-      console.log(props.app.getDiagramEngine().maxNumberPointsPerLink)
-      props.app.getDiagramEngine().repaintCanvas()
+      console.log(app.getDiagramEngine().maxNumberPointsPerLink)
+      app.getDiagramEngine().repaintCanvas()
     }, [shiftPressed])
 
     useEffect(() => {
@@ -126,18 +106,22 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
       )
     }, [])
 
-    console.log(shiftPressed)
-
     const addLabelToSelectedLinks = (links: LinkModel[]) => {
       links.forEach(l => {
         if (l.getOptions().selected) {
           l.addLabel(new EditableLabelModel({ value: "" }))
         }
       })
-      props.app.getDiagramEngine().repaintCanvas()
+      app.getDiagramEngine().repaintCanvas()
+      // links.forEach(l => {
+      //   if (l.getOptions().selected) {
+      //     l.getLabels().forEach(l => l.remove())
+      //   }
+      // })
+      // app.getDiagramEngine().repaintCanvas()
     }
 
-    const createDiagramNode = (type: string) => {
+    const createDiagramNode = (type: DiagramNodeType) => {
       switch (type) {
         case ENTITY:
           return new EntityModel(entityTrayState)
@@ -152,8 +136,38 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
       }
     }
 
+    const addNodeToCanvas = (event, nodeType: DiagramNodeType) => {
+      const node = createDiagramNode(nodeType)
+
+      const point = app.getDiagramEngine().getRelativeMousePoint(event)
+      node.setPosition(point)
+
+      node.registerListener({
+        selectionChanged: e => {
+          if (e.isSelected) {
+            setFocusedNode(e.entity)
+            //@ts-ignore
+            if (e.entity.getState()) {
+              //@ts-ignore
+              setSelectedNodeState(e.entity.getState())
+            }
+          } else {
+            setFocusedNode(null)
+          }
+        },
+      })
+
+      app.getDiagramEngine().getModel().addAll(node)
+      setFocusedNode(node)
+
+      if (!(node instanceof TriangleNodeModel)) {
+        setSelectedNodeState(node.getState())
+      }
+      forceUpdate()
+    }
+
     const handleSerialize = () => {
-      const serialized = props.app.getDiagramEngine().getModel().serialize()
+      const serialized = app.getDiagramEngine().getModel().serialize()
       const blob = new Blob([JSON.stringify(serialized)], {
         type: "text/plain;charset=utf-8",
       })
@@ -172,11 +186,11 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
 
     const handleDeserializeString = (serializedString: string) => {
       const serialized = JSON.parse(serializedString)
-      props.app
+      app
         .getDiagramEngine()
         .getModel()
-        .deserializeModel(serialized, props.app.getDiagramEngine())
-      props.app
+        .deserializeModel(serialized, app.getDiagramEngine())
+      app
         .getDiagramEngine()
         .getModel()
         .getNodes()
@@ -195,7 +209,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
             },
           })
         )
-      props.app.getDiagramEngine().repaintCanvas()
+      app.getDiagramEngine().repaintCanvas()
     }
 
     const handleFileChosen = (file: File) => {
@@ -216,18 +230,24 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
           <TrayWidget>
             <EntityTrayItemWidget
               model={ENTITY}
+              setSelectedDiv={setSelectedDiv}
+              isSelected={selectedDiv === ENTITY}
               name="Entity"
               color="rgb(0,192,255)"
               setEntityTrayState={setEntityTrayState}
             />
             <EntityTrayItemWidget
               model={RELATIONSHIP}
+              setSelectedDiv={setSelectedDiv}
+              isSelected={selectedDiv === RELATIONSHIP}
               name="Relationship"
               color="rgb(0,192,255)"
               setEntityTrayState={setRelationshipTrayState}
             />
             <AttributeTrayItemWidget
               model={ATTRIBUTE}
+              setSelectedDiv={setSelectedDiv}
+              isSelected={selectedDiv === ATTRIBUTE}
               name="Attribute"
               color="rgb(0,192,255)"
               attributeTrayState={attributeTrayState}
@@ -235,6 +255,8 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
             />
             <TrayItemWidget
               model={GENERALIZATION_CATEGORY}
+              setSelectedDiv={setSelectedDiv}
+              isSelected={selectedDiv === GENERALIZATION_CATEGORY}
               name="Generalization/category"
               color="rgb(0,192,255)"
             />
@@ -322,7 +344,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
               <TrayButton
                 onClick={() =>
                   addLabelToSelectedLinks(
-                    props.app.getDiagramEngine().getModel().getLinks()
+                    app.getDiagramEngine().getModel().getLinks()
                   )
                 }
               >
@@ -342,47 +364,19 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
             </ButtonTray>
           </TrayWidget>
           <Layer
-            onDrop={event => {
+            onClick={e => selectedDiv && addNodeToCanvas(e, selectedDiv)}
+            onDrop={e => {
               const nodeType = JSON.parse(
-                event.dataTransfer.getData("storm-diagram-node")
+                e.dataTransfer.getData("storm-diagram-node")
               )
-
-              const node = createDiagramNode(nodeType)
-
-              const point = props.app
-                .getDiagramEngine()
-                .getRelativeMousePoint(event)
-              node.setPosition(point)
-
-              node.registerListener({
-                selectionChanged: e => {
-                  if (e.isSelected) {
-                    setFocusedNode(e.entity)
-                    //@ts-ignore
-                    if (e.entity.getState()) {
-                      //@ts-ignore
-                      setSelectedNodeState(e.entity.getState())
-                    }
-                  } else {
-                    setFocusedNode(null)
-                  }
-                },
-              })
-
-              props.app.getDiagramEngine().getModel().addAll(node)
-              setFocusedNode(node)
-
-              if (!(node instanceof TriangleNodeModel)) {
-                setSelectedNodeState(node.getState())
-              }
-              forceUpdate()
+              addNodeToCanvas(e, nodeType)
             }}
             onDragOver={event => {
               event.preventDefault()
             }}
           >
             <DemoCanvasWidget>
-              <CanvasWidget engine={props.app.getDiagramEngine()} />
+              <CanvasWidget engine={app.getDiagramEngine()} />
             </DemoCanvasWidget>
           </Layer>
         </Content>

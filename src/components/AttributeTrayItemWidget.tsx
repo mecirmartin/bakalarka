@@ -3,7 +3,7 @@ import React from "react"
 
 import { DiagramNodeType } from "../helpers/nodeTypes"
 import { CustomLabel, Tray } from "./EntityTrayItemWidget"
-import { AttributeTrayState, AttributeType, KeyType } from "./BodyWidget"
+import { AttributeTrayState, AttributeType, KeyType } from "../types"
 import AttributePng from "./node-images/Attribute.png"
 
 export interface AttributeTrayItemWidgetProps {
@@ -13,6 +13,8 @@ export interface AttributeTrayItemWidgetProps {
   setAttributeTrayState: React.Dispatch<
     React.SetStateAction<AttributeTrayState>
   >
+  setSelectedDiv?: (model: DiagramNodeType) => void
+  isSelected?: boolean
   color?: string
   selected?: boolean
 }
@@ -24,7 +26,15 @@ const SelectContainer = styled.div`
 `
 
 export const AttributeTrayItemWidget: React.FC<AttributeTrayItemWidgetProps> =
-  ({ model, name, color, setAttributeTrayState, attributeTrayState }) => {
+  ({
+    model,
+    name,
+    color,
+    setAttributeTrayState,
+    attributeTrayState,
+    isSelected,
+    setSelectedDiv,
+  }) => {
     return (
       <>
         <img
@@ -42,6 +52,10 @@ export const AttributeTrayItemWidget: React.FC<AttributeTrayItemWidgetProps> =
             e.dataTransfer.setData("storm-diagram-node", JSON.stringify(model))
           }}
           className="tray-item"
+          onClick={() =>
+            !isSelected ? setSelectedDiv(model) : setSelectedDiv(null)
+          }
+          style={{ backgroundColor: isSelected && "rgb(0,192,255)" }}
         >
           {name}
           <SelectContainer>

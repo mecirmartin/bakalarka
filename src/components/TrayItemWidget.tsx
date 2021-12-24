@@ -3,7 +3,13 @@ import React from "react"
 import GeneralizationPng from "./node-images/Generalization.png"
 import { Tray } from "./EntityTrayItemWidget"
 
-export const TrayItemWidget = ({ color, model, name }) => (
+export const TrayItemWidget = ({
+  color,
+  model,
+  name,
+  isSelected,
+  setSelectedDiv,
+}) => (
   <>
     <img
       src={GeneralizationPng}
@@ -20,6 +26,10 @@ export const TrayItemWidget = ({ color, model, name }) => (
         e.dataTransfer.setData("storm-diagram-node", JSON.stringify(model))
       }}
       className="tray-item"
+      onClick={() =>
+        !isSelected ? setSelectedDiv(model) : setSelectedDiv(null)
+      }
+      style={{ backgroundColor: isSelected && "rgb(0,192,255)" }}
     >
       {name}
     </Tray>
