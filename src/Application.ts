@@ -10,6 +10,8 @@ import { DefaultDiagramState } from "@projectstorm/react-diagrams"
 import { SimpleLinkFactory } from "./links/simplelink/SimpleLinkFactory"
 import { EditableLabelFactory } from "./links/editable-label/EditableLabelFactory"
 import Zoomaction from "./helpers/zoom"
+import { CustomDiagramModel } from "./customModel"
+import { CommandManager } from "./components/command-manager/commandManager"
 
 export class Application {
   protected activeModel: SRD.DiagramModel
@@ -45,8 +47,33 @@ export class Application {
   }
 
   public newModel() {
-    this.activeModel = new SRD.DiagramModel()
+    this.activeModel = new CustomDiagramModel()
     this.diagramEngine.setModel(this.activeModel)
+    // Add command manager
+    //@ts-ignore
+    window.commandManager = new CommandManager()
+    // Add command manager event listeners
+    window.addEventListener("keydown", (event: any) => {
+      if (
+        event.keyCode == 90 &&
+        (event.ctrlKey || event.metaKey) &&
+        !event.shiftKey
+      ) {
+        // @ts-ignore
+        window.commandManager.undo()
+        this.diagramEngine.repaintCanvas()
+      }
+
+      if (
+        event.keyCode == 90 &&
+        (event.ctrlKey || event.metaKey) &&
+        event.shiftKey
+      ) {
+        // @ts-ignore
+        window.commandManager.redo()
+        this.diagramEngine.repaintCanvas()
+      }
+    })
   }
 
   public getActiveDiagram(): SRD.DiagramModel | null {

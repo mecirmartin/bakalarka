@@ -92,20 +92,14 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
     }, [shiftPressed])
 
     useEffect(() => {
-      document.addEventListener(
-        "keydown",
-        e =>
-          (e.code === "ShiftRight" || e.code === "ShiftLeft") &&
-          setShiftPressed(true)
-      )
-      document.addEventListener(
-        "keyup",
-        e =>
-          (e.code === "ShiftRight" || e.code === "ShiftLeft") &&
-          setShiftPressed(false)
-      )
-    }, [])
-
+      // TODO Discuss this
+      // const keydownCb = e =>
+      //   (e.code === "ShiftRight" || e.code === "ShiftLeft") &&
+      //   setShiftPressed(!shiftPressed)
+      // window.addEventListener("keydown", keydownCb)
+      // return () => window.removeEventListener("keydown", keydownCb)
+    }, [shiftPressed])
+    console.log(shiftPressed)
     const addLabelToSelectedLinks = (links: LinkModel[]) => {
       links.forEach(l => {
         if (l.getOptions().selected) {
