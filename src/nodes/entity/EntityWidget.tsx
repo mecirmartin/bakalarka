@@ -5,7 +5,7 @@ import styled from "@emotion/styled"
 import { EntityModel } from "./EntityModel"
 import { InlineEdit } from "../../components/inline-edit/InlineEdit"
 import { CirclePort } from "../../components/CirclePort"
-import { EntityTrayState } from "../../components/BodyWidget"
+import { EntityTrayState } from "../../types"
 
 export interface EntityProps {
   node: EntityModel

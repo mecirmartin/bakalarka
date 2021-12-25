@@ -1,7 +1,7 @@
 import { NodeModel } from "@projectstorm/react-diagrams"
 
 import { BidirectionalPortModel } from "../../components/BidirectionaPortModel"
-import { EntityTrayState } from "../../components/BodyWidget"
+import { EntityTrayState } from "../../types"
 import { ENTITY } from "../../helpers/nodeTypes"
 
 export class EntityModel extends NodeModel {

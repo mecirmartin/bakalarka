@@ -1,7 +1,7 @@
 import { NodeModel } from "@projectstorm/react-diagrams"
 
 import { RELATIONSHIP } from "../../helpers/nodeTypes"
-import { RelationshipTrayState } from "../../components/BodyWidget"
+import { RelationshipTrayState } from "../../types"
 import { BidirectionalPortModel } from "../../components/BidirectionaPortModel"
 
 export class RelationshipModel extends NodeModel {

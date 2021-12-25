@@ -2,7 +2,7 @@ import { NodeModel } from "@projectstorm/react-diagrams"
 
 import { ATTRIBUTE } from "../../helpers/nodeTypes"
 import { BidirectionalPortModel } from "../../components/BidirectionaPortModel"
-import { AttributeTrayState } from "../../components/BodyWidget"
+import { AttributeTrayState } from "../../types"
 
 export class AttributeModel extends NodeModel {
   constructor(attributeState: AttributeTrayState) {

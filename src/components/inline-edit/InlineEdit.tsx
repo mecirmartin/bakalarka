@@ -1,6 +1,6 @@
 import React from "react"
 import ContentEditable from "react-contenteditable"
-import { AttributeTrayState } from "../BodyWidget"
+import { AttributeTrayState } from "../../types"
 
 interface InlineEditState {
   html: string

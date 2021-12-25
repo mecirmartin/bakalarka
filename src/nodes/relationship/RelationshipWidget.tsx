@@ -5,7 +5,7 @@ import styled from "@emotion/styled"
 import { RelationshipModel } from "./RelationshipModel"
 import { InlineEdit } from "../../components/inline-edit/InlineEdit"
 import { CirclePort } from "../../components/CirclePort"
-import { RelationshipTrayState } from "../../components/BodyWidget"
+import { RelationshipTrayState } from "../../types"
 
 export interface RelationshipProps {
   node: RelationshipModel

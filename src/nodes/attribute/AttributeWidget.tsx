@@ -5,7 +5,7 @@ import styled from "@emotion/styled"
 import { AttributeModel } from "./AttributeModel"
 import { InlineEdit } from "../../components/inline-edit/InlineEdit"
 import { CirclePort } from "../../components/CirclePort"
-import { AttributeTrayState } from "../../components/BodyWidget"
+import { AttributeTrayState } from "../../types"
 
 export interface AttributeProps {
   node: AttributeModel
