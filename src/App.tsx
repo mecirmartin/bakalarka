@@ -8,13 +8,13 @@ const App = () => {
   return (
     <>
       {/* @ts-ignore */}
-      <button onClick={() => childRef.current.handleSerialize()}>
+      {/* <button onClick={() => childRef.current.handleSerialize()}>
         Serialize
-      </button>
+      </button> */}
       {/* @ts-ignore */}
-      <button onClick={() => childRef.current.handleDeserialize()}>
+      {/* <button onClick={() => childRef.current.handleDeserialize()}>
         Deserialize
-      </button>
+      </button> */}
       <BodyWidget app={app} ref={childRef} />
     </>
   )
