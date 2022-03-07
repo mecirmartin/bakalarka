@@ -1,6 +1,32 @@
 import { DefaultLinkWidget, LinkWidget } from "@projectstorm/react-diagrams"
+import React from "react"
+import { CustomLinkSegmentWidget } from "../LinkSegment"
 
 export class SimpleLinkWidget extends DefaultLinkWidget {
+  generateLink(
+    path: string,
+    extraProps: any,
+    id: string | number
+  ): JSX.Element {
+    const ref = React.createRef<SVGPathElement>()
+    this.refPaths.push(ref)
+    return (
+      <CustomLinkSegmentWidget
+        key={`link-${id}`}
+        path={path}
+        selected={this.state.selected}
+        diagramEngine={this.props.diagramEngine}
+        factory={this.props.diagramEngine.getFactoryForLink(this.props.link)}
+        link={this.props.link}
+        forwardRef={ref}
+        onSelection={selected => {
+          this.setState({ selected: selected })
+        }}
+        extras={extraProps}
+      />
+    )
+  }
+
   render() {
     //ensure id is present for all points on the path
     const points = this.props.link.getPoints()

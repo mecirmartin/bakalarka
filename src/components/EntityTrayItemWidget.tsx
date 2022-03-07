@@ -9,6 +9,7 @@ export interface EntityTrayItemWidgetProps {
   model: DiagramNodeType
   name: string
   setEntityTrayState: React.Dispatch<React.SetStateAction<EntityTrayState>>
+  setDraggedNode: React.Dispatch<React.SetStateAction<DiagramNodeType>>
   setSelectedDiv?: (model: DiagramNodeType) => void
   isSelected?: boolean
   state?: EntityTrayState
@@ -53,17 +54,13 @@ export const EntityTrayItemWidget: React.FC<EntityTrayItemWidgetProps> = ({
   setEntityTrayState,
   isSelected,
   setSelectedDiv,
+  setDraggedNode,
 }) => (
   <Tray
     color={color}
     draggable={true}
     onDragStart={e => {
-      let image
-      console.log(model)
-      if (model === ENTITY) image = document.getElementById("drag-entity")
-      else image = document.getElementById("drag-relationship")
-
-      e.dataTransfer.setDragImage(image, 100, 200)
+      setDraggedNode(model)
       e.dataTransfer.setData("storm-diagram-node", JSON.stringify(model))
     }}
     className="tray-item"
@@ -72,18 +69,6 @@ export const EntityTrayItemWidget: React.FC<EntityTrayItemWidgetProps> = ({
   >
     {name}
     <ButtonTray>
-      <img
-        src={EntityPng}
-        width="100"
-        style={{ width: 100, position: "absolute", left: -100 }}
-        id="drag-entity"
-      />
-      <img
-        src={RelationshipPng}
-        width="100"
-        style={{ width: 100, position: "absolute", right: -100, top: 50 }}
-        id="drag-relationship"
-      />
       <CustomLabel htmlFor="type">
         {name === "Entity" ? "Weak" : "Identification"}
       </CustomLabel>

@@ -73,7 +73,6 @@ export class Relationship extends React.Component<
             position: "absolute",
             left: "-23%",
             top: "43%",
-            zIndex: 2,
           }}
         >
           <CirclePort />
@@ -85,7 +84,6 @@ export class Relationship extends React.Component<
             position: "absolute",
             right: "-23.5%",
             top: "43%",
-            zIndex: 2,
           }}
         >
           <CirclePort />
@@ -97,7 +95,6 @@ export class Relationship extends React.Component<
             position: "absolute",
             right: "44%",
             top: "-26.5%",
-            zIndex: 2,
           }}
         >
           <CirclePort />
@@ -109,7 +106,6 @@ export class Relationship extends React.Component<
             position: "absolute",
             right: "44%",
             top: "112.5%",
-            zIndex: 2,
           }}
         >
           <CirclePort />

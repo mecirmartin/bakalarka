@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useEffect, useState, forwardRef, useImperativeHandle } from "react"
 import { CanvasWidget } from "@projectstorm/react-canvas-core"
-import { LinkModel } from "@projectstorm/react-diagrams-core"
+import { LinkModel, NodeModel } from "@projectstorm/react-diagrams-core"
 
 import { TrayWidget } from "./TrayWidget"
 import { EntityTrayItemWidget } from "./EntityTrayItemWidget"
@@ -68,6 +68,8 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
       useState<LineTypeState>("singleLine")
     const [shiftPressed, setShiftPressed] = useState(false)
     const [selectedDiv, setSelectedDiv] = useState<DiagramNodeType | null>(null)
+    const [skeletonNode, setSkeletonNode] = useState<NodeModel | null>(null)
+    const [draggedNode, setDraggedNode] = useState<DiagramNodeType | null>()
 
     useEffect(() => {
       if (!focusedNode) return
@@ -99,7 +101,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
       // window.addEventListener("keydown", keydownCb)
       // return () => window.removeEventListener("keydown", keydownCb)
     }, [shiftPressed])
-    console.log(shiftPressed)
+
     const addLabelToSelectedLinks = (links: LinkModel[]) => {
       links.forEach(l => {
         if (l.getOptions().selected) {
@@ -107,12 +109,6 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
         }
       })
       app.getDiagramEngine().repaintCanvas()
-      // links.forEach(l => {
-      //   if (l.getOptions().selected) {
-      //     l.getLabels().forEach(l => l.remove())
-      //   }
-      // })
-      // app.getDiagramEngine().repaintCanvas()
     }
 
     const createDiagramNode = (type: DiagramNodeType) => {
@@ -126,7 +122,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
         case GENERALIZATION_CATEGORY:
           return new TriangleNodeModel({ value: "" })
         default:
-          throw new Error("Unknown diagram node type")
+          throw new Error(`Unknown diagram node type: ${type}`)
       }
     }
 
@@ -229,6 +225,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
               name="Entity"
               color="rgb(0,192,255)"
               setEntityTrayState={setEntityTrayState}
+              setDraggedNode={setDraggedNode}
             />
             <EntityTrayItemWidget
               model={RELATIONSHIP}
@@ -237,6 +234,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
               name="Relationship"
               color="rgb(0,192,255)"
               setEntityTrayState={setRelationshipTrayState}
+              setDraggedNode={setDraggedNode}
             />
             <AttributeTrayItemWidget
               model={ATTRIBUTE}
@@ -246,6 +244,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
               color="rgb(0,192,255)"
               attributeTrayState={attributeTrayState}
               setAttributeTrayState={setAttributeTrayState}
+              setDraggedNode={setDraggedNode}
             />
             <TrayItemWidget
               model={GENERALIZATION_CATEGORY}
@@ -253,6 +252,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
               isSelected={selectedDiv === GENERALIZATION_CATEGORY}
               name="Generalization/category"
               color="rgb(0,192,255)"
+              setDraggedNode={setDraggedNode}
             />
 
             <TrayHeader>Line type</TrayHeader>
@@ -312,6 +312,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
                 color="rgb(144,238,144)"
                 state={selectedNodeState}
                 setEntityTrayState={setSelectedNodeState}
+                setDraggedNode={setDraggedNode}
               />
             )}
 
@@ -322,6 +323,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
                 color="rgb(144,238,144)"
                 state={selectedNodeState}
                 setEntityTrayState={setSelectedNodeState}
+                setDraggedNode={setDraggedNode}
               />
             )}
 
@@ -332,6 +334,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
                 color="rgb(144,238,144)"
                 attributeTrayState={selectedNodeState}
                 setAttributeTrayState={setSelectedNodeState}
+                setDraggedNode={setDraggedNode}
               />
             )}
             <ButtonTray>
@@ -364,9 +367,23 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
                 e.dataTransfer.getData("storm-diagram-node")
               )
               addNodeToCanvas(e, nodeType)
+              skeletonNode.remove()
+              setSkeletonNode(null)
             }}
-            onDragOver={event => {
-              event.preventDefault()
+            onDragOver={e => {
+              e.preventDefault()
+              console.log("dragover", e)
+              if (!skeletonNode) {
+                const skeleton = createDiagramNode(draggedNode)
+                setSkeletonNode(skeleton)
+                app.getDiagramEngine().getModel().addAll(skeleton)
+              } else {
+                const point = app.getDiagramEngine().getRelativeMousePoint(e)
+                skeletonNode.setPosition(point)
+              }
+
+              forceUpdate()
+              e.preventDefault()
             }}
           >
             <DemoCanvasWidget>

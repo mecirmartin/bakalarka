@@ -3,6 +3,8 @@ import {
   PointModel,
   LinkWidget,
 } from "@projectstorm/react-diagrams"
+import React from "react"
+import { CustomLinkSegmentWidget } from "../LinkSegment"
 
 const CustomLinkArrowWidget = props => {
   const {
@@ -64,6 +66,30 @@ const CustomLinkArrowWidget = props => {
 }
 
 export class AdvancedLinkWidget extends DefaultLinkWidget {
+  generateLink(
+    path: string,
+    extraProps: any,
+    id: string | number
+  ): JSX.Element {
+    const ref = React.createRef<SVGPathElement>()
+    this.refPaths.push(ref)
+    return (
+      <CustomLinkSegmentWidget
+        key={`link-${id}`}
+        path={path}
+        selected={this.state.selected}
+        diagramEngine={this.props.diagramEngine}
+        factory={this.props.diagramEngine.getFactoryForLink(this.props.link)}
+        link={this.props.link}
+        forwardRef={ref}
+        onSelection={selected => {
+          this.setState({ selected: selected })
+        }}
+        extras={extraProps}
+      />
+    )
+  }
+
   generateArrow(point: PointModel, previousPoint: PointModel): JSX.Element {
     return (
       <CustomLinkArrowWidget
@@ -104,7 +130,6 @@ export class AdvancedLinkWidget extends DefaultLinkWidget {
       )
     }
 
-    //render the circles
     for (let i = 1; i < points.length - 1; i++) {
       paths.push(this.generatePoint(points[i]))
     }
