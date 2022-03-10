@@ -70,6 +70,8 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
     const [selectedDiv, setSelectedDiv] = useState<DiagramNodeType | null>(null)
     const [skeletonNode, setSkeletonNode] = useState<NodeModel | null>(null)
     const [draggedNode, setDraggedNode] = useState<DiagramNodeType | null>()
+    const [mousePosition, setMousePosition] =
+      useState<{ clientX: number; clientY: number }>()
 
     useEffect(() => {
       if (!focusedNode) return
@@ -110,6 +112,12 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
       })
       app.getDiagramEngine().repaintCanvas()
     }
+
+    useEffect(() => {
+      window.addEventListener("mousemove", e => {
+        setMousePosition({ clientX: e.clientX, clientY: e.clientY })
+      })
+    }, [])
 
     const createDiagramNode = (type: DiagramNodeType) => {
       switch (type) {
@@ -211,6 +219,15 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
       fileReader.readAsText(file)
     }
 
+    const handleKeyDown = e => {
+      e.clientX = mousePosition.clientX
+      e.clientY = mousePosition.clientY
+      if (e.key === "e") addNodeToCanvas(e, ENTITY)
+      if (e.key === "r") addNodeToCanvas(e, RELATIONSHIP)
+      if (e.key === "a") addNodeToCanvas(e, ATTRIBUTE)
+      if (e.key === "g") addNodeToCanvas(e, GENERALIZATION_CATEGORY)
+    }
+
     return (
       <Body>
         <Header>
@@ -303,6 +320,23 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
                 }
               />
             </div>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <TrayButton
+                onClick={() =>
+                  addLabelToSelectedLinks(
+                    app.getDiagramEngine().getModel().getLinks()
+                  )
+                }
+              >
+                Add label
+              </TrayButton>
+            </div>
 
             <TrayHeader>Selected Node</TrayHeader>
             {focusedNode instanceof EntityModel && (
@@ -338,15 +372,6 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
               />
             )}
             <ButtonTray>
-              <TrayButton
-                onClick={() =>
-                  addLabelToSelectedLinks(
-                    app.getDiagramEngine().getModel().getLinks()
-                  )
-                }
-              >
-                Add label
-              </TrayButton>
               <TrayButton onClick={handleSerialize}>Serialize graph</TrayButton>
               <TrayButton onClick={handleDeserialize}>
                 Deserialize graph
@@ -361,6 +386,8 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
             </ButtonTray>
           </TrayWidget>
           <Layer
+            tabIndex={0}
+            onKeyDown={handleKeyDown}
             onClick={e => selectedDiv && addNodeToCanvas(e, selectedDiv)}
             onDrop={e => {
               const nodeType = JSON.parse(

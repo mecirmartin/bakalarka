@@ -18,6 +18,7 @@ export interface DefaultLinkSegmentWidgetProps {
 
 export class CustomLinkSegmentWidget extends React.Component<DefaultLinkSegmentWidgetProps> {
   render() {
+    console.log("toto", this.props.selected, this.props.link.isSelected())
     const Bottom = React.cloneElement(
       this.props.factory.generateLinkSegment(
         this.props.link,
@@ -31,12 +32,7 @@ export class CustomLinkSegmentWidget extends React.Component<DefaultLinkSegmentW
 
     const Top = React.cloneElement(Bottom, {
       strokeLinecap: "round",
-      onMouseLeave: () => {
-        // this.props.onSelection(false)
-      },
-      onMouseEnter: () => {
-        // this.props.onSelection(true)
-      },
+
       ...this.props.extras,
       ref: null,
       "data-linkid": this.props.link.getID(),

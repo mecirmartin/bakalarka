@@ -26,6 +26,7 @@ export const Content = styled.div`
 export const Layer = styled.div`
   position: relative;
   flex-grow: 1;
+  outline: none;
 `
 
 export const TrayHeader = styled.h3`

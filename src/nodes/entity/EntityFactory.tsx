@@ -15,7 +15,6 @@ export class EntityNodeFactory extends AbstractReactFactory<
   }
 
   generateModel(initialConfig: any) {
-    //TODO
     return new EntityModel(initialConfig.initialConfig.extras)
   }
 

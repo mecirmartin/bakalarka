@@ -33,7 +33,6 @@ export const ButtonTray = styled.div`
   margin-top: 0.4rem;
 `
 
-// TODO Style this
 export const CustomCheckbox = styled.input`
   background-color: rgb(0, 192, 255);
   border: none;
@@ -64,7 +63,10 @@ export const EntityTrayItemWidget: React.FC<EntityTrayItemWidgetProps> = ({
       e.dataTransfer.setData("storm-diagram-node", JSON.stringify(model))
     }}
     className="tray-item"
-    onClick={() => (!isSelected ? setSelectedDiv(model) : setSelectedDiv(null))}
+    onClick={() => {
+      if (!setSelectedDiv) return
+      !isSelected ? setSelectedDiv(model) : setSelectedDiv(null)
+    }}
     style={{ backgroundColor: isSelected && "rgb(0,192,255)" }}
   >
     {name}
