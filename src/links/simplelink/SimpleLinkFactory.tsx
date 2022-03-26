@@ -10,9 +10,9 @@ import { SimpleLinkModel } from "./SimpleLinkModel"
 import { SimpleLinkWidget } from "./SimpleLinkWidget"
 
 export const Path = styled.path<{ selected: boolean }>`
-  /* box-shadow: ${p => p.selected && "0 0 10px rgb(0, 192, 255)"}; */
-  -webkit-filter: drop-shadow(0 0 10px rgb(0, 192, 255));
-  filter: drop-shadow(0 0 10px rgb(0, 192, 255));
+  -webkit-filter: ${p =>
+    p.selected && "drop-shadow(0 0 10px rgb(0, 192, 255))"};
+  filter: ${p => p.selected && "drop-shadow(0 0 10px rgb(0, 192, 255))"};
   fill: none;
   pointer-events: auto;
 `

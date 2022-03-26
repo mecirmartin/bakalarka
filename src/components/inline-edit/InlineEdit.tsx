@@ -47,7 +47,9 @@ export class InlineEdit extends React.Component<
         }
         html={this.props.state.value} // innerHTML of the editable div
         disabled={false} // use true to disable edition
-        onChange={e => this.props.setState({ value: e.target.value })} // handle innerHTML change
+        onChange={e =>
+          this.props.setState(state => ({ ...state, value: e.target.value }))
+        } // handle innerHTML change
         onKeyDown={e => e.stopPropagation()}
       />
     )

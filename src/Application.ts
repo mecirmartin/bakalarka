@@ -46,16 +46,51 @@ export class Application {
     ;(state as DefaultDiagramState).dragNewLink.config.allowLooseLinks = false
   }
 
+  adjustGridOffset = ({ offsetX, offsetY }: any) => {
+    document.body.style.setProperty("--offset-x", `${Math.round(offsetX)}px`)
+    document.body.style.setProperty("--offset-y", `${Math.round(offsetY)}px`)
+  }
+
+  adjustGridZoom = ({ zoom }: any) => {
+    const { gridSize } = this.activeModel.getOptions()
+    document.body.style.setProperty(
+      "--grid-size",
+      `${(gridSize * zoom) / 20}px`
+    )
+  }
+
+  realignGrid = () => {
+    this.adjustGridOffset({
+      offsetX: this.activeModel.getOffsetX(),
+      offsetY: this.activeModel.getOffsetY(),
+    })
+
+    this.adjustGridZoom({
+      zoom: this.activeModel.getZoomLevel(),
+    })
+  }
+
   public newModel() {
     this.activeModel = new CustomDiagramModel()
+    this.activeModel.setLocked(false)
+    this.activeModel.setGridSize(1)
+    this.activeModel.registerListener({
+      eventDidFire: event => {
+        const type = event.function
+        if (type === "offsetUpdated") this.adjustGridOffset(event)
+        if (type === "zoomUpdated") this.adjustGridZoom(event)
+      },
+    })
+    this.realignGrid()
     this.diagramEngine.setModel(this.activeModel)
     // Add command manager
     //@ts-ignore
     window.commandManager = new CommandManager()
     // Add command manager event listeners
     window.addEventListener("keydown", (event: any) => {
+      console.log("ev", event)
       if (
-        event.keyCode == 90 &&
+        event.keyCode === 90 &&
         (event.ctrlKey || event.metaKey) &&
         !event.shiftKey
       ) {
@@ -65,7 +100,7 @@ export class Application {
       }
 
       if (
-        event.keyCode == 90 &&
+        event.keyCode === 90 &&
         (event.ctrlKey || event.metaKey) &&
         event.shiftKey
       ) {

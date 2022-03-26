@@ -37,7 +37,7 @@ import {
   AttributeTrayState,
 } from "../types"
 
-const useForceUpdate = () => {
+export const useForceUpdate = () => {
   const [_, setValue] = useState(0) // integer state
   return () => setValue(value => value + 1) // update the state to force render
 }
@@ -70,8 +70,11 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
     const [selectedDiv, setSelectedDiv] = useState<DiagramNodeType | null>(null)
     const [skeletonNode, setSkeletonNode] = useState<NodeModel | null>(null)
     const [draggedNode, setDraggedNode] = useState<DiagramNodeType | null>()
-    const [mousePosition, setMousePosition] =
-      useState<{ clientX: number; clientY: number }>()
+    const [mousePosition, setMousePosition] = useState<{
+      clientX: number
+      clientY: number
+    }>()
+    const [snapToGrid, setSnapToGrid] = useState(false)
 
     useEffect(() => {
       if (!focusedNode) return
@@ -80,34 +83,34 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
       app.getDiagramEngine().repaintCanvas()
     }, [selectedNodeState])
 
-    // The component instance will be extended
-    // with whatever you return from the callback passed
-    // as the second argument
     useImperativeHandle(ref, () => ({ handleDeserialize, handleSerialize }))
 
-    const setMaxPointsOnLine = (maxNumber: number) =>
-      app.getDiagramEngine().setMaxNumberPointsPerLink(maxNumber)
+    const handleKeyPress = (e: KeyboardEvent) => {
+      console.log(e.key, e)
+      if (e.key === "d") {
+        const nodes = app.getActiveDiagram().getNodes()
+        nodes.forEach(node => {
+          if (node.isSelected()) {
+            const oldPoint = node.getPosition()
+            const newPoint = { x: oldPoint.x + 30, y: oldPoint.y + 30 }
+            addNodeToCanvas(e, node.getType() as any, newPoint)
+          }
+        })
+      }
+    }
 
     useEffect(() => {
-      if (shiftPressed) setMaxPointsOnLine(1000)
-      else setMaxPointsOnLine(0)
-      console.log(app.getDiagramEngine().maxNumberPointsPerLink)
-      app.getDiagramEngine().repaintCanvas()
-    }, [shiftPressed])
+      window.addEventListener("keypress", handleKeyPress)
+      return () => window.removeEventListener("keypress", handleKeyPress)
+    }, [])
 
-    useEffect(() => {
-      // TODO Discuss this
-      // const keydownCb = e =>
-      //   (e.code === "ShiftRight" || e.code === "ShiftLeft") &&
-      //   setShiftPressed(!shiftPressed)
-      // window.addEventListener("keydown", keydownCb)
-      // return () => window.removeEventListener("keydown", keydownCb)
-    }, [shiftPressed])
-
-    const addLabelToSelectedLinks = (links: LinkModel[]) => {
+    const addLabelToSelectedLinks = (
+      links: LinkModel[],
+      type: "MULTIPLICITY" | "ROLE"
+    ) => {
       links.forEach(l => {
         if (l.getOptions().selected) {
-          l.addLabel(new EditableLabelModel({ value: "" }))
+          l.addLabel(new EditableLabelModel({ value: "", type }))
         }
       })
       app.getDiagramEngine().repaintCanvas()
@@ -134,10 +137,10 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
       }
     }
 
-    const addNodeToCanvas = (event, nodeType: DiagramNodeType) => {
+    const addNodeToCanvas = (event, nodeType: DiagramNodeType, point?: any) => {
       const node = createDiagramNode(nodeType)
 
-      const point = app.getDiagramEngine().getRelativeMousePoint(event)
+      if (!point) point = app.getDiagramEngine().getRelativeMousePoint(event)
       node.setPosition(point)
 
       node.registerListener({
@@ -325,16 +328,45 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
                 width: "100%",
                 display: "flex",
                 justifyContent: "center",
+                flexDirection: "column",
               }}
             >
               <TrayButton
                 onClick={() =>
                   addLabelToSelectedLinks(
-                    app.getDiagramEngine().getModel().getLinks()
+                    app.getDiagramEngine().getModel().getLinks(),
+                    "MULTIPLICITY"
                   )
                 }
               >
-                Add label
+                Add multiplicity
+              </TrayButton>
+              <TrayButton
+                onClick={() =>
+                  addLabelToSelectedLinks(
+                    app.getDiagramEngine().getModel().getLinks(),
+                    "ROLE"
+                  )
+                }
+              >
+                Add role
+              </TrayButton>
+              <TrayButton
+                onClick={() => {
+                  if (!snapToGrid) {
+                    console.log("reg")
+                    app.getActiveDiagram().setGridSize(16.7)
+
+                    setSnapToGrid(true)
+                  } else {
+                    console.log("dereg")
+                    app.getActiveDiagram().setGridSize(1)
+
+                    setSnapToGrid(false)
+                  }
+                }}
+              >
+                {snapToGrid ? "Disable" : "Enable"} grid
               </TrayButton>
             </div>
 
@@ -399,7 +431,6 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(
             }}
             onDragOver={e => {
               e.preventDefault()
-              console.log("dragover", e)
               if (!skeletonNode) {
                 const skeleton = createDiagramNode(draggedNode)
                 setSkeletonNode(skeleton)

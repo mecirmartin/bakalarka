@@ -8,15 +8,26 @@ export interface EditableLabelOptions extends BaseModelOptions {
   extras?: string
 }
 
-export class EditableLabelModel extends LabelModel {
-  private extras: string
+interface Extras {
+  value: string
+  type: "MULTIPLICITY" | "ROLE"
+}
 
-  constructor(labelState: { value: string }) {
+export class EditableLabelModel extends LabelModel {
+  private extras: Extras
+
+  constructor(labelState: Extras) {
     super({
       ...labelState,
       type: "editable-label",
     })
-    this.extras = labelState.value || "Role"
+    this.extras = {
+      value:
+        labelState.value || labelState.type === "MULTIPLICITY"
+          ? "1..n"
+          : "Role",
+      type: labelState.type,
+    }
   }
 
   serialize() {
@@ -26,7 +37,7 @@ export class EditableLabelModel extends LabelModel {
     }
   }
 
-  setState(extras: string) {
+  setState(extras: Extras) {
     this.extras = extras
   }
 
