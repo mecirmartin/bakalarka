@@ -394,8 +394,8 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
             />
           )}
           <ButtonTray>
-            <TrayButton onClick={handleSerialize}>Serialize graph</TrayButton>
-            <TrayButton onClick={handleDeserialize}>Deserialize graph</TrayButton>
+            <TrayButton onClick={handleSerialize}>Serialize model</TrayButton>
+            <TrayButton onClick={handleDeserialize}>Deserialize model</TrayButton>
             <input
               type="file"
               id="file"
