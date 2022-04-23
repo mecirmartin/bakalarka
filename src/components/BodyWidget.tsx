@@ -91,8 +91,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
   useImperativeHandle(ref, () => ({ handleDeserialize, handleSerialize }));
 
   const handleKeyPress = (e: KeyboardEvent) => {
-    console.log(e.key, e);
-    if (e.key === "d") {
+    if (e.code === "Digit1" && e.altKey) {
       const nodes = app.getActiveDiagram().getNodes();
       nodes.forEach(node => {
         if (node.isSelected()) {

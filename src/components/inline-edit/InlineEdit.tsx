@@ -1,26 +1,23 @@
-import React from "react"
-import ContentEditable from "react-contenteditable"
-import { AttributeTrayState } from "../../types"
+import React from "react";
+import ContentEditable from "react-contenteditable";
+import { AttributeTrayState } from "../../types";
 
 interface InlineEditState {
-  html: string
+  html: string;
 }
 interface InlineEditProps {
-  text?: string
-  bold?: boolean
-  marginTop?: number
-  attributeState?: AttributeTrayState
-  style?: Object
-  state?: { value: string }
-  setState?: Function
+  text?: string;
+  bold?: boolean;
+  marginTop?: number;
+  attributeState?: AttributeTrayState;
+  style?: Object;
+  state?: { value: string };
+  setState?: Function;
 }
 
-export class InlineEdit extends React.Component<
-  InlineEditProps,
-  InlineEditState
-> {
+export class InlineEdit extends React.Component<InlineEditProps, InlineEditState> {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   render = () => {
@@ -47,11 +44,9 @@ export class InlineEdit extends React.Component<
         }
         html={this.props.state.value} // innerHTML of the editable div
         disabled={false} // use true to disable edition
-        onChange={e =>
-          this.props.setState(state => ({ ...state, value: e.target.value }))
-        } // handle innerHTML change
+        onChange={e => this.props.setState(state => ({ ...state, value: e.target.value }))} // handle innerHTML change
         onKeyDown={e => e.stopPropagation()}
       />
-    )
-  }
+    );
+  };
 }
