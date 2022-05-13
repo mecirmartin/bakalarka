@@ -1,31 +1,27 @@
-import styled from "@emotion/styled"
-import React from "react"
+import styled from "@emotion/styled";
+import React from "react";
 
-import { DiagramNodeType } from "../helpers/nodeTypes"
-import { CustomLabel, Tray } from "./EntityTrayItemWidget"
-import { AttributeTrayState, AttributeType, KeyType } from "../types"
+import { DiagramNodeType } from "../helpers/nodeTypes";
+import { CustomLabel, Tray } from "./EntityTrayItemWidget";
+import { AttributeTrayState, AttributeType, KeyType } from "../types";
 
 export interface AttributeTrayItemWidgetProps {
-  model: DiagramNodeType
-  name: string
-  attributeTrayState: AttributeTrayState
-  setAttributeTrayState: React.Dispatch<
-    React.SetStateAction<AttributeTrayState>
-  >
-  setDraggedNode: React.Dispatch<React.SetStateAction<DiagramNodeType>>
-  setSelectedDiv?: (model: DiagramNodeType) => void
-  isSelected?: boolean
-  color?: string
-  selected?: boolean
+  model: DiagramNodeType;
+  name: string;
+  attributeTrayState: AttributeTrayState;
+  setAttributeTrayState: React.Dispatch<React.SetStateAction<AttributeTrayState>>;
+  setDraggedNode: React.Dispatch<React.SetStateAction<DiagramNodeType>>;
+  setSelectedDiv?: (model: DiagramNodeType) => void;
+  isSelected?: boolean;
+  color?: string;
+  selected?: boolean;
 }
 
 const SelectContainer = styled.div`
   margin-top: 0.4rem;
-`
+`;
 
-export const AttributeTrayItemWidget: React.FC<
-  AttributeTrayItemWidgetProps
-> = ({
+export const AttributeTrayItemWidget: React.FC<AttributeTrayItemWidgetProps> = ({
   model,
   name,
   color,
@@ -39,11 +35,11 @@ export const AttributeTrayItemWidget: React.FC<
     color={color}
     draggable={true}
     onDragStart={e => {
-      setDraggedNode(model)
-      e.dataTransfer.setData("storm-diagram-node", JSON.stringify(model))
+      setDraggedNode(model);
+      e.dataTransfer.setData("storm-diagram-node", JSON.stringify(model));
     }}
     className="tray-item"
-    onClick={() => (!isSelected ? setSelectedDiv(model) : setSelectedDiv(null))}
+    onClick={() => setSelectedDiv && (!isSelected ? setSelectedDiv(model) : setSelectedDiv(null))}
     style={{ backgroundColor: isSelected && "rgb(0,192,255)" }}
   >
     {name}
@@ -87,4 +83,4 @@ export const AttributeTrayItemWidget: React.FC<
       </select>
     </SelectContainer>
   </Tray>
-)
+);
