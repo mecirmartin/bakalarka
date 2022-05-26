@@ -9,7 +9,7 @@ import { States } from "./state/States";
 import { DefaultDiagramState } from "@projectstorm/react-diagrams";
 import { SimpleLinkFactory } from "./links/simplelink/SimpleLinkFactory";
 import { EditableLabelFactory } from "./links/editable-label/EditableLabelFactory";
-import Zoomaction from "./helpers/zoom";
+import ZoomAction from "./helpers/zoom";
 import { CustomDiagramModel } from "./customModel";
 import { CommandManager } from "./components/command-manager/commandManager";
 
@@ -21,7 +21,7 @@ export class Application {
     this.activeModel = null;
     this.diagramEngine = SRD.default({ registerDefaultZoomCanvasAction: false });
     this.newModel();
-    this.diagramEngine.getActionEventBus().registerAction(new Zoomaction());
+    this.diagramEngine.getActionEventBus().registerAction(new ZoomAction());
     this.diagramEngine.maxNumberPointsPerLink = 0;
 
     // Register factory
@@ -39,17 +39,6 @@ export class Application {
 
     (state as DefaultDiagramState).dragNewLink.config.allowLooseLinks = false;
   }
-
-  adjustGridOffset = ({ offsetX, offsetY }: any) => {
-    document.body.style.setProperty("--offset-x", `${Math.round(offsetX)}px`);
-    document.body.style.setProperty("--offset-y", `${Math.round(offsetY)}px`);
-  };
-
-  adjustGridZoom = ({ zoom }: any) => {
-    const { gridSize } = this.activeModel.getOptions();
-    document.body.style.setProperty("--grid-size", `${(gridSize * zoom) / 20}px`);
-  };
-
   realignGrid = () => {
     this.adjustGridOffset({
       offsetX: this.activeModel.getOffsetX(),
@@ -61,6 +50,22 @@ export class Application {
     });
   };
 
+  adjustGridZoom = ({ zoom }) => {
+    const { gridSize } = this.activeModel.getOptions();
+    document
+      .getElementById("demoContainer")
+      ?.style.setProperty("--grid-size", `${(gridSize * zoom) / 100}px`);
+  };
+
+  adjustGridOffset = ({ offsetX, offsetY }) => {
+    document
+      .getElementById("demoContainer")
+      ?.style.setProperty("--offset-x", `${Math.round(offsetX)}px`);
+    document
+      .getElementById("demoContainer")
+      ?.style.setProperty("--offset-y", `${Math.round(offsetY)}px`);
+  };
+
   public newModel() {
     this.activeModel = new CustomDiagramModel();
     this.activeModel.setLocked(false);
@@ -68,8 +73,8 @@ export class Application {
     this.activeModel.registerListener({
       eventDidFire: event => {
         const type = event.function;
-        if (type === "offsetUpdated") this.adjustGridOffset(event);
-        if (type === "zoomUpdated") this.adjustGridZoom(event);
+        if (type === "offsetUpdated") this.adjustGridOffset(event as any);
+        if (type === "zoomUpdated") this.adjustGridZoom(event as any);
       },
     });
     this.realignGrid();
