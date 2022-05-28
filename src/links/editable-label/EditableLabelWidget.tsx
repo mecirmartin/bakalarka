@@ -54,7 +54,7 @@ export const EditableLabelWidget: React.FunctionComponent<FlowAliasLabelWidgetPr
           backgroundColor: state.type === "MULTIPLICITY" ? "#333" : "#23395D",
           padding: state.type === "MULTIPLICITY" ? "0.5rem" : "0.5rem 2rem",
           borderRadius: "0.3rem",
-          fontSize: "1rem",
+          fontSize: state.type === "MULTIPLICITY" ? "1rem" : "1.3rem",
         }}
         state={state}
         setState={setState}
