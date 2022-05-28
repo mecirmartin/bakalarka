@@ -5,11 +5,11 @@ import {
   DragCanvasState,
   MoveItemsState,
   SelectingState,
-} from "@projectstorm/react-canvas-core"
-import { DragNewLinkState } from "@projectstorm/react-diagrams"
-import { PortModel, LinkModel } from "@projectstorm/react-diagrams-core"
+} from "@projectstorm/react-canvas-core";
+import { DragNewLinkState } from "@projectstorm/react-diagrams";
+import { PortModel, LinkModel } from "@projectstorm/react-diagrams-core";
 
-import SelectLinkState from "./SelectLinkState"
+import SelectLinkState from "./SelectLinkState";
 
 /**
  * This class defines custom handlers (called states) to respond to
@@ -19,16 +19,16 @@ export class States extends State {
   constructor() {
     super({
       name: "diagram-states",
-    })
+    });
 
     // You can grab the default state from `react-diagrams` for every one of these...
-    this.childStates = [new SelectingState()]
-    this.dragCanvas = new DragCanvasState()
-    this.dragNewLink = new DragNewLinkState()
-    this.dragItems = new MoveItemsState()
+    this.childStates = [new SelectingState()];
+    this.dragCanvas = new DragCanvasState();
+    this.dragNewLink = new DragNewLinkState();
+    this.dragItems = new MoveItemsState();
 
     // But this is a custom one!
-    this.selectLink = new SelectLinkState()
+    this.selectLink = new SelectLinkState();
 
     // Determine what was clicked on
     this.registerAction(
@@ -38,31 +38,30 @@ export class States extends State {
           const element = this.engine
             .getActionEventBus()
             //@ts-ignore
-            .getModelForEvent(event)
+            .getModelForEvent(event);
 
           // The canvas was clicked on, transition to the dragging canvas state
           if (!element) {
-            this.transitionWithEvent(this.dragCanvas, event)
+            this.transitionWithEvent(this.dragCanvas, event);
           }
           // Initiate dragging a new link
           else if (element instanceof PortModel) {
-            this.transitionWithEvent(this.dragNewLink, event)
+            this.transitionWithEvent(this.dragNewLink, event);
           }
           // Link selection <============================================
           else if (element instanceof LinkModel) {
-            console.log("link select", event)
-            this.transitionWithEvent(this.selectLink, event)
+            this.transitionWithEvent(this.selectLink, event);
           }
           // Move items
           else {
-            this.transitionWithEvent(this.dragItems, event)
+            this.transitionWithEvent(this.dragItems, event);
           }
         },
       })
-    )
+    );
   }
-  dragCanvas: any
-  dragNewLink: any
-  selectLink: any
-  dragItems: any
+  dragCanvas: any;
+  dragNewLink: any;
+  selectLink: any;
+  dragItems: any;
 }

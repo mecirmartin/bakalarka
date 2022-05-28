@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState, forwardRef, useImperativeHandle } from "react";
+import { useEffect, useState, forwardRef, useImperativeHandle, useRef } from "react";
 import { CanvasWidget } from "@projectstorm/react-canvas-core";
 import { LinkModel, NodeModel } from "@projectstorm/react-diagrams-core";
 
@@ -71,13 +71,13 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
     clientY: number;
   }>();
   const [snapToGrid, setSnapToGrid] = useState(false);
+  const canvasWidgetRef = useRef();
   const setMaxPointsOnLine = (maxNumber: number) =>
     app.getDiagramEngine().setMaxNumberPointsPerLink(maxNumber);
 
   useEffect(() => {
     if (shiftPressed) setMaxPointsOnLine(1000);
     else setMaxPointsOnLine(0);
-    console.log(shiftPressed);
     app.getDiagramEngine().repaintCanvas();
   }, [shiftPressed]);
 
@@ -412,7 +412,12 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
         <Layer
           tabIndex={0}
           onKeyDown={handleKeyDown}
-          onClick={e => selectedDiv && addNodeToCanvas(e, selectedDiv)}
+          onClick={e =>
+            // @ts-ignore
+            canvasWidgetRef.current.ref.current === e.target &&
+            selectedDiv &&
+            addNodeToCanvas(e, selectedDiv)
+          }
           onDrop={e => {
             const nodeType = JSON.parse(e.dataTransfer.getData("storm-diagram-node"));
             addNodeToCanvas(e, nodeType);
@@ -435,7 +440,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
           }}
         >
           <DemoCanvasWidget>
-            <CanvasWidget engine={app.getDiagramEngine()} />
+            <CanvasWidget ref={canvasWidgetRef} engine={app.getDiagramEngine()} />
           </DemoCanvasWidget>
         </Layer>
       </Content>

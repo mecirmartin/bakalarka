@@ -84,7 +84,6 @@ export class Application {
     window.commandManager = new CommandManager();
     // Add command manager event listeners
     window.addEventListener("keydown", (event: any) => {
-      console.log("ev", event);
       if (event.keyCode === 90 && (event.ctrlKey || event.metaKey) && !event.shiftKey) {
         // @ts-ignore
         window.commandManager.undo();
