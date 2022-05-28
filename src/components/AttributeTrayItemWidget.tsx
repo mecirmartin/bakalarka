@@ -47,6 +47,7 @@ export const AttributeTrayItemWidget: React.FC<AttributeTrayItemWidgetProps> = (
       <CustomLabel htmlFor="attrType">Type</CustomLabel>
       <select
         id="attrType"
+        onClick={e => e.stopPropagation()}
         onChange={e =>
           setAttributeTrayState((attributeState: AttributeTrayState) => ({
             ...attributeState,
@@ -65,6 +66,7 @@ export const AttributeTrayItemWidget: React.FC<AttributeTrayItemWidgetProps> = (
       <CustomLabel htmlFor="keyType">Key</CustomLabel>
       <select
         id="keyType"
+        onClick={e => e.stopPropagation()}
         onChange={e =>
           setAttributeTrayState((attributeState: AttributeTrayState) => ({
             ...attributeState,
