@@ -10,6 +10,7 @@ import { DragNewLinkState } from "@projectstorm/react-diagrams";
 import { PortModel, LinkModel } from "@projectstorm/react-diagrams-core";
 
 import SelectLinkState from "./SelectLinkState";
+import { CustomSelectingState } from "./ShiftState";
 
 /**
  * This class defines custom handlers (called states) to respond to
@@ -22,7 +23,7 @@ export class States extends State {
     });
 
     // You can grab the default state from `react-diagrams` for every one of these...
-    this.childStates = [new SelectingState()];
+    this.childStates = [new CustomSelectingState()];
     this.dragCanvas = new DragCanvasState();
     this.dragNewLink = new DragNewLinkState();
     this.dragItems = new MoveItemsState();
@@ -46,6 +47,11 @@ export class States extends State {
           }
           // Initiate dragging a new link
           else if (element instanceof PortModel) {
+            console.log(event);
+            element
+              .getParentCanvasModel()
+              .getSelectedEntities()
+              .forEach(e => e instanceof LinkModel && e.setSelected(false));
             this.transitionWithEvent(this.dragNewLink, event);
           }
           // Link selection <============================================

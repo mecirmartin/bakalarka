@@ -12,6 +12,7 @@ import { EditableLabelFactory } from "./links/editable-label/EditableLabelFactor
 import ZoomAction from "./helpers/zoom";
 import { CustomDiagramModel } from "./customModel";
 import { CommandManager } from "./components/command-manager/commandManager";
+import { CustomSelectingState } from "./state/ShiftState";
 
 export class Application {
   protected activeModel: SRD.DiagramModel;

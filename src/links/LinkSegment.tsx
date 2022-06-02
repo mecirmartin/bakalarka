@@ -1,23 +1,21 @@
-import * as React from "react"
-import { DiagramEngine } from "@projectstorm/react-diagrams-core"
-import {
-  DefaultLinkModel,
-  DefaultLinkFactory,
-} from "@projectstorm/react-diagrams"
+import * as React from "react";
+import { DiagramEngine } from "@projectstorm/react-diagrams-core";
+import { DefaultLinkModel, DefaultLinkFactory } from "@projectstorm/react-diagrams";
 
 export interface DefaultLinkSegmentWidgetProps {
-  path: string
-  link: DefaultLinkModel
-  selected: boolean
-  forwardRef: React.RefObject<SVGPathElement>
-  factory: DefaultLinkFactory
-  diagramEngine: DiagramEngine
-  onSelection: (selected: boolean) => any
-  extras: object
+  path: string;
+  link: DefaultLinkModel;
+  selected: boolean;
+  forwardRef: React.RefObject<SVGPathElement>;
+  factory: DefaultLinkFactory;
+  diagramEngine: DiagramEngine;
+  onSelection: (selected: boolean) => any;
+  extras: object;
 }
 
 export class CustomLinkSegmentWidget extends React.Component<DefaultLinkSegmentWidgetProps> {
   render() {
+    console.log(this.props.selected, this.props.link.isSelected());
     const Bottom = React.cloneElement(
       this.props.factory.generateLinkSegment(
         this.props.link,
@@ -27,7 +25,7 @@ export class CustomLinkSegmentWidget extends React.Component<DefaultLinkSegmentW
       {
         ref: this.props.forwardRef,
       }
-    )
+    );
 
     const Top = React.cloneElement(Bottom, {
       strokeLinecap: "round",
@@ -40,17 +38,17 @@ export class CustomLinkSegmentWidget extends React.Component<DefaultLinkSegmentW
       fill: "none",
       onContextMenu: event => {
         if (!this.props.link.isLocked()) {
-          event.preventDefault()
-          this.props.link.remove()
+          event.preventDefault();
+          this.props.link.remove();
         }
       },
-    })
+    });
 
     return (
       <g>
         {Bottom}
         {Top}
       </g>
-    )
+    );
   }
 }

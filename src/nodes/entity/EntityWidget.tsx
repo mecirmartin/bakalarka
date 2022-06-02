@@ -1,28 +1,27 @@
-import * as React from "react"
-import { DiagramEngine, PortWidget } from "@projectstorm/react-diagrams-core"
-import styled from "@emotion/styled"
+import * as React from "react";
+import { DiagramEngine, PortWidget } from "@projectstorm/react-diagrams-core";
+import styled from "@emotion/styled";
 
-import { EntityModel } from "./EntityModel"
-import { InlineEdit } from "../../components/inline-edit/InlineEdit"
-import { CirclePort } from "../../components/CirclePort"
-import { EntityTrayState } from "../../types"
+import { EntityModel } from "./EntityModel";
+import { InlineEdit } from "../../components/inline-edit/InlineEdit";
+import { CirclePort } from "../../components/CirclePort";
+import { EntityTrayState } from "../../types";
 
 export interface EntityProps {
-  node: EntityModel
-  engine: DiagramEngine
-  title: string
-  entityState: EntityTrayState
+  node: EntityModel;
+  engine: DiagramEngine;
+  title: string;
+  entityState: EntityTrayState;
 }
 
 export interface EntityState {
-  value: string
+  value: string;
 }
 
 export const EntityDiv = styled.div<{ isSelected: boolean }>`
   position: relative;
   border: solid 3px #333;
-  box-shadow: ${props =>
-    props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none"};
+  box-shadow: ${props => (props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none")};
   width: 250px;
   height: 80px;
   display: flex;
@@ -32,7 +31,7 @@ export const EntityDiv = styled.div<{ isSelected: boolean }>`
   background-color: #fff;
   padding-bottom: 10px;
   padding-top: 10px;
-`
+`;
 
 const WrapperDiv = styled.div`
   width: 100%;
@@ -42,22 +41,22 @@ const WrapperDiv = styled.div`
   justify-content: center;
   align-items: center;
   margin: 3%;
-`
+`;
 
 export class Entity extends React.Component<EntityProps, EntityState> {
   constructor(props: EntityProps & EntityState) {
-    super(props)
+    super(props);
     this.state = {
       value: this.props.node.getState().value || "Entity",
-    }
-    this.setState = this.setState.bind(this)
+    };
+    this.setState = this.setState.bind(this);
   }
 
   componentDidUpdate() {
     this.props.node.setState({
       ...this.props.node.getState(),
       value: this.state.value,
-    })
+    });
   }
 
   render() {
@@ -100,6 +99,6 @@ export class Entity extends React.Component<EntityProps, EntityState> {
           <CirclePort />
         </PortWidget>
       </EntityDiv>
-    )
+    );
   }
 }

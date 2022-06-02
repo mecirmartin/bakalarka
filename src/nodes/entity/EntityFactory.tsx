@@ -1,21 +1,18 @@
-import * as React from "react"
-import { EntityModel } from "./EntityModel"
+import * as React from "react";
+import { EntityModel } from "./EntityModel";
 
-import { AbstractReactFactory } from "@projectstorm/react-canvas-core"
-import { DiagramEngine } from "@projectstorm/react-diagrams-core"
-import { ENTITY } from "../../helpers/nodeTypes"
-import { Entity } from "./EntityWidget"
+import { AbstractReactFactory } from "@projectstorm/react-canvas-core";
+import { DiagramEngine } from "@projectstorm/react-diagrams-core";
+import { ENTITY } from "../../helpers/nodeTypes";
+import { Entity } from "./EntityWidget";
 
-export class EntityNodeFactory extends AbstractReactFactory<
-  EntityModel,
-  DiagramEngine
-> {
+export class EntityNodeFactory extends AbstractReactFactory<EntityModel, DiagramEngine> {
   constructor() {
-    super(ENTITY)
+    super(ENTITY);
   }
 
   generateModel(initialConfig: any) {
-    return new EntityModel(initialConfig.initialConfig.extras)
+    return new EntityModel(initialConfig.initialConfig.extras);
   }
 
   generateReactWidget(event: any): JSX.Element {
@@ -26,6 +23,6 @@ export class EntityNodeFactory extends AbstractReactFactory<
         title={event.model.title}
         entityState={event.model.state}
       />
-    )
+    );
   }
 }

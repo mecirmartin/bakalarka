@@ -38,7 +38,11 @@ export const EditableLabelWidget: React.FunctionComponent<FlowAliasLabelWidgetPr
         !labelRef.current.contains(event.target) &&
         !props.model.getState().value
       ) {
-        setShowLabel(false);
+        // setShowLabel(false);
+        // console.log(props.model.getParent().clone());
+        props.model.getParentCanvasModel();
+        props.model.getParent().clone();
+        props.model.getParent().remove();
       }
     };
 

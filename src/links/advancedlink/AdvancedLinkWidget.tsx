@@ -1,17 +1,13 @@
-import {
-  DefaultLinkWidget,
-  PointModel,
-  LinkWidget,
-} from "@projectstorm/react-diagrams"
-import React from "react"
-import { CustomLinkSegmentWidget } from "../LinkSegment"
+import { DefaultLinkWidget, PointModel, LinkWidget } from "@projectstorm/react-diagrams";
+import React from "react";
+import { CustomLinkSegmentWidget } from "../LinkSegment";
 
 const CustomLinkArrowWidget = props => {
   const {
     point,
     previousPoint,
     link: { sourcePort, targetPort },
-  } = props
+  } = props;
 
   const angle =
     (Math.atan2(
@@ -19,34 +15,28 @@ const CustomLinkArrowWidget = props => {
       point.getPosition().x - previousPoint.getPosition().x
     ) *
       180) /
-    Math.PI
+    Math.PI;
 
-  const position = sourcePort.position
-  const previousPosition = targetPort.position
-  const xOffset = (position.x - previousPosition.x) / 2
-  const yOffset = (position.y - previousPosition.y) / 2
+  const position = sourcePort.position;
+  const previousPosition = targetPort.position;
+  const xOffset = (position.x - previousPosition.x) / 2;
+  const yOffset = (position.y - previousPosition.y) / 2;
   const offset =
     props.lineType === "nonTransferableRelationship"
       ? (Math.abs(xOffset) + Math.abs(yOffset)) / 2
-      : 0
+      : 0;
 
   return (
     <g
       className="arrow"
-      transform={
-        "translate(" +
-        point.getPosition().x +
-        ", " +
-        point.getPosition().y +
-        ")"
-      }
+      transform={"translate(" + point.getPosition().x + ", " + point.getPosition().y + ")"}
     >
       <g style={{ transform: "rotate(" + angle + "deg)" }}>
         <g transform={"translate(-38, 0)"}>
           <path
-            d={`M ${0 - offset} 0 L ${20 - offset} -13.3333 L ${
-              40 - offset
-            } 0 L ${20 - offset} 13.3333 L ${0 - offset} 0`}
+            d={`M ${0 - offset} 0 L ${20 - offset} -13.3333 L ${40 - offset} 0 L ${
+              20 - offset
+            } 13.3333 L ${0 - offset} 0`}
             fill={
               props.lineType === "aggregation"
                 ? "white"
@@ -62,17 +52,13 @@ const CustomLinkArrowWidget = props => {
         </g>
       </g>
     </g>
-  )
-}
+  );
+};
 
 export class AdvancedLinkWidget extends DefaultLinkWidget {
-  generateLink(
-    path: string,
-    extraProps: any,
-    id: string | number
-  ): JSX.Element {
-    const ref = React.createRef<SVGPathElement>()
-    this.refPaths.push(ref)
+  generateLink(path: string, extraProps: any, id: string | number): JSX.Element {
+    const ref = React.createRef<SVGPathElement>();
+    this.refPaths.push(ref);
     return (
       <CustomLinkSegmentWidget
         key={`link-${id}`}
@@ -83,11 +69,11 @@ export class AdvancedLinkWidget extends DefaultLinkWidget {
         link={this.props.link}
         forwardRef={ref}
         onSelection={selected => {
-          this.setState({ selected: selected })
+          this.setState({ selected: selected });
         }}
         extras={extraProps}
       />
-    )
+    );
   }
 
   generateArrow(point: PointModel, previousPoint: PointModel): JSX.Element {
@@ -101,14 +87,15 @@ export class AdvancedLinkWidget extends DefaultLinkWidget {
         lineType={this.props.link.getOptions().extras.lineType}
         link={this.props.link}
       />
-    )
+    );
   }
 
   render() {
+    console.log("sel", this.state);
     //ensure id is present for all points on the path
-    var points = this.props.link.getPoints()
-    var paths = []
-    this.refPaths = []
+    var points = this.props.link.getPoints();
+    var paths = [];
+    this.refPaths = [];
 
     //draw the multiple anchors and complex line instead
     for (let j = 0; j < points.length - 1; j++) {
@@ -119,33 +106,25 @@ export class AdvancedLinkWidget extends DefaultLinkWidget {
             "data-linkid": this.props.link.getID(),
             "data-point": j,
             onMouseDown:
-              this.props.link.getOptions().extras.lineType !==
-              "nonTransferableRelationship"
-                ? (event: MouseEvent) =>
-                    this.addPointToLink(event as any, j + 1)
+              this.props.link.getOptions().extras.lineType !== "nonTransferableRelationship"
+                ? (event: MouseEvent) => this.addPointToLink(event as any, j + 1)
                 : null,
           },
           j
         )
-      )
+      );
     }
 
     for (let i = 1; i < points.length - 1; i++) {
-      paths.push(this.generatePoint(points[i]))
+      paths.push(this.generatePoint(points[i]));
     }
 
     if (this.props.link.getTargetPort() !== null) {
-      paths.push(
-        this.generateArrow(points[points.length - 1], points[points.length - 2])
-      )
+      paths.push(this.generateArrow(points[points.length - 1], points[points.length - 2]));
     } else {
-      paths.push(this.generatePoint(points[points.length - 1]))
+      paths.push(this.generatePoint(points[points.length - 1]));
     }
 
-    return (
-      <g data-default-link-test={this.props.link.getOptions().testName}>
-        {paths}
-      </g>
-    )
+    return <g data-default-link-test={this.props.link.getOptions().testName}>{paths}</g>;
   }
 }
