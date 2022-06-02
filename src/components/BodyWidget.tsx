@@ -36,6 +36,25 @@ import {
   RelationshipTrayState,
   AttributeTrayState,
 } from "../types";
+import { throttle } from "lodash";
+import { Command } from "./command-manager/command";
+
+const throttledPositionChanged = throttle(
+  event => {
+    console.log(event.entity.getPosition());
+    const position = event.entity.getPosition();
+
+    const command = new Command(
+      () => event.entity.setPosition(position),
+      () => event.entity.setPosition(position)
+    );
+
+    // @ts-ignore
+    window.commandManager.addCommand(command);
+  },
+  1000,
+  { trailing: false }
+);
 
 export const useForceUpdate = () => {
   const [_, setValue] = useState(0); // integer state
@@ -72,9 +91,43 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
     clientY: number;
   }>();
   const [snapToGrid, setSnapToGrid] = useState(false);
+  const [selectedLinkState, setselectedLinkState] = useState(null);
+  const [selectedLinkDropdown, setSelectedLinkDropdown] = useState<LineTypeState>(null);
   const canvasWidgetRef = useRef();
   const setMaxPointsOnLine = (maxNumber: number) =>
     app.getDiagramEngine().setMaxNumberPointsPerLink(maxNumber);
+
+  const selectedLink = app
+    .getDiagramEngine()
+    .getModel()
+    .getLinks()
+    .find(link => link.isSelected());
+
+  useEffect(() => {
+    if (!selectedLink) {
+      if (selectedLinkState !== null) setselectedLinkState(null);
+      return;
+    }
+
+    console.log("now", selectedLink.getOptions().extras.lineType);
+    setselectedLinkState(selectedLink);
+    // selectedLink.getOptions().extras.lineType = "multiLine";
+    // app.getDiagramEngine().repaintCanvas();
+  }, [selectedLink]);
+
+  useEffect(() => {
+    if (!selectedLink) return;
+    const lineType = selectedLink.getOptions().extras.lineType;
+    console.log("tu", selectedLinkDropdown, lineType);
+    if (selectedLinkDropdown !== lineType) {
+      // const startPort = selectedLink.getSourcePort();
+      // const endPort = selectedLink.getTargetPort();
+      selectedLink.getOptions().extras.lineType = selectedLinkDropdown;
+      selectedLink.setSelected(false);
+
+      app.getDiagramEngine().repaintCanvas();
+    }
+  }, [selectedLinkDropdown]);
 
   useEffect(() => {
     if (shiftPressed) setMaxPointsOnLine(1000);
@@ -159,6 +212,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
           setFocusedNode(null);
         }
       },
+      positionChanged: event => throttledPositionChanged(event),
     });
 
     app.getDiagramEngine().getModel().addAll(node);
@@ -408,6 +462,32 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
               setDraggedNode={setDraggedNode}
             />
           )}
+          <TrayHeader>Selected Link</TrayHeader>
+          {selectedLinkState && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <select
+                name="select"
+                onChange={e => {
+                  lineType = e.target.value as LineTypeState;
+                  setSelectedLinkDropdown(lineType);
+                }}
+                value={selectedLinkDropdown}
+                id="select"
+              >
+                <option value="singleLine">Single line</option>
+                <option value="multiLine">Multi line</option>
+                <option value="aggregation">Aggregation</option>
+                <option value="composition">Composition</option>
+                <option value="nonTransferableRelationship">Non-transferable</option>
+              </select>
+            </div>
+          )}
           <ButtonTray>
             <TrayButton onClick={handleSerialize}>Serialize model</TrayButton>
             <TrayButton onClick={handleDeserialize}>Deserialize model</TrayButton>
@@ -434,6 +514,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
             addNodeToCanvas(e, nodeType);
             skeletonNode.remove();
             setSkeletonNode(null);
+            setFocusedNode(null);
           }}
           onDragOver={e => {
             e.preventDefault();

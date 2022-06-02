@@ -15,7 +15,6 @@ export interface DefaultLinkSegmentWidgetProps {
 
 export class CustomLinkSegmentWidget extends React.Component<DefaultLinkSegmentWidgetProps> {
   render() {
-    console.log(this.props.selected, this.props.link.isSelected());
     const Bottom = React.cloneElement(
       this.props.factory.generateLinkSegment(
         this.props.link,

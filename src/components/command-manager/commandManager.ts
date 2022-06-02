@@ -12,6 +12,7 @@ export class CommandManager {
   }
 
   addCommand(command: Command) {
+    console.log("add", command);
     // A change is made, so everything stored after the current point in the timeline should be erased.
     this.stack.length = this.index;
     this.stack.push(command);
