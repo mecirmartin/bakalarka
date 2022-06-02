@@ -39,22 +39,22 @@ import {
 import { throttle } from "lodash";
 import { Command } from "./command-manager/command";
 
-const throttledPositionChanged = throttle(
-  event => {
-    console.log(event.entity.getPosition());
-    const position = event.entity.getPosition();
+// const throttledPositionChanged = throttle(
+//   event => {
+//     console.log(event.entity.getPosition());
+//     const position = event.entity.getPosition();
 
-    const command = new Command(
-      () => event.entity.setPosition(position),
-      () => event.entity.setPosition(position)
-    );
+//     const command = new Command(
+//       () => event.entity.setPosition(position),
+//       () => event.entity.setPosition(position)
+//     );
 
-    // @ts-ignore
-    window.commandManager.addCommand(command);
-  },
-  1000,
-  { trailing: false }
-);
+//     // @ts-ignore
+//     window.commandManager.addCommand(command);
+//   },
+//   1000,
+//   { leading: false }
+// );
 
 export const useForceUpdate = () => {
   const [_, setValue] = useState(0); // integer state
@@ -210,7 +210,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
           setFocusedNode(null);
         }
       },
-      positionChanged: event => throttledPositionChanged(event),
+      // positionChanged: event => throttledPositionChanged(event),
     });
 
     app.getDiagramEngine().getModel().addAll(node);

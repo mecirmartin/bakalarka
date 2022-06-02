@@ -91,7 +91,6 @@ export class CustomLinkWidget extends DefaultLinkWidget {
   }
 
   render() {
-    console.log("sel", this.state);
     //ensure id is present for all points on the path
     var points = this.props.link.getPoints();
     var paths = [];
