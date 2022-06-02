@@ -10,10 +10,9 @@ export interface FlowAliasLabelWidgetProps {
   model: EditableLabelModel;
 }
 
-export const Label = styled.div<{ showLabel: boolean }>`
+export const Label = styled.div`
   user-select: none;
   pointer-events: auto;
-  display: ${props => (props.showLabel ? "box" : "none")};
 `;
 
 // now we can render all what we want in the label
@@ -22,7 +21,7 @@ export const EditableLabelWidget: React.FunctionComponent<FlowAliasLabelWidgetPr
     value: props.model.getState().value || "ROLE",
     type: props.model.getState().type,
   });
-  const [showLabel, setShowLabel] = useState(true);
+  // const [showLabel, setShowLabel] = useState(true);
   const labelRef = useRef(null);
   const forceUpdate = useForceUpdate();
 
@@ -31,27 +30,27 @@ export const EditableLabelWidget: React.FunctionComponent<FlowAliasLabelWidgetPr
     forceUpdate();
   }, [state]);
 
-  useEffect(() => {
-    const handleClickOutside = event => {
-      if (
-        labelRef.current &&
-        !labelRef.current.contains(event.target) &&
-        !props.model.getState().value
-      ) {
-        // setShowLabel(false);
-        // console.log(props.model.getParent().clone());
-        props.model.getParentCanvasModel();
-        props.model.getParent().clone();
-        props.model.getParent().remove();
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = event => {
+  //     if (
+  //       labelRef.current &&
+  //       !labelRef.current.contains(event.target) &&
+  //       !props.model.getState().value
+  //     ) {
+  //       // setShowLabel(false);
+  //       // console.log(props.model.getParent().clone());
+  //       props.model.getParentCanvasModel();
+  //       props.model.getParent().clone();
+  //       props.model.getParent().remove();
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [labelRef]);
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, [labelRef]);
 
   return (
-    <Label ref={labelRef} showLabel={showLabel}>
+    <Label ref={labelRef}>
       <InlineEdit
         style={{
           color: "#fff",

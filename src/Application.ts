@@ -12,7 +12,7 @@ import { EditableLabelFactory } from "./links/editable-label/EditableLabelFactor
 import ZoomAction from "./helpers/zoom";
 import { CustomDiagramModel } from "./customModel";
 import { CommandManager } from "./components/command-manager/commandManager";
-import { CustomSelectingState } from "./state/ShiftState";
+import { CustomLinkFactory } from "./links/customLink/CustomLinkFactory";
 
 export class Application {
   protected activeModel: SRD.DiagramModel;
@@ -34,6 +34,7 @@ export class Application {
 
     this.diagramEngine.getLinkFactories().registerFactory(new AdvancedLinkFactory());
     this.diagramEngine.getLinkFactories().registerFactory(new SimpleLinkFactory());
+    this.diagramEngine.getLinkFactories().registerFactory(new CustomLinkFactory());
     this.diagramEngine.getLabelFactories().registerFactory(new EditableLabelFactory());
     this.diagramEngine.getStateMachine().pushState(new States());
     const state = this.diagramEngine.getStateMachine().getCurrentState();

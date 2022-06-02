@@ -111,6 +111,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
 
     console.log("now", selectedLink.getOptions().extras.lineType);
     setselectedLinkState(selectedLink);
+    setSelectedLinkDropdown(selectedLink.getOptions().extras.lineType);
     // selectedLink.getOptions().extras.lineType = "multiLine";
     // app.getDiagramEngine().repaintCanvas();
   }, [selectedLink]);
@@ -118,14 +119,11 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
   useEffect(() => {
     if (!selectedLink) return;
     const lineType = selectedLink.getOptions().extras.lineType;
-    console.log("tu", selectedLinkDropdown, lineType);
+
     if (selectedLinkDropdown !== lineType) {
-      // const startPort = selectedLink.getSourcePort();
-      // const endPort = selectedLink.getTargetPort();
       selectedLink.getOptions().extras.lineType = selectedLinkDropdown;
       selectedLink.setSelected(false);
-
-      app.getDiagramEngine().repaintCanvas();
+      forceUpdate();
     }
   }, [selectedLinkDropdown]);
 
