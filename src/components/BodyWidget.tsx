@@ -472,7 +472,7 @@ export const BodyWidget: React.FC<BodyWidgetProps> = forwardRef(({ app }, ref) =
               <select
                 name="select"
                 onChange={e => {
-                  lineType = e.target.value as LineTypeState;
+                  const lineType = e.target.value as LineTypeState;
                   setSelectedLinkDropdown(lineType);
                 }}
                 value={selectedLinkDropdown}
