@@ -41,6 +41,7 @@ export const AttributeTrayItemWidget: React.FC<AttributeTrayItemWidgetProps> = (
     className="tray-item"
     onClick={() => setSelectedDiv && (!isSelected ? setSelectedDiv(model) : setSelectedDiv(null))}
     style={{ backgroundColor: isSelected && "rgb(0,192,255)" }}
+    data-cy="attribute-widget"
   >
     {name}
     <SelectContainer>

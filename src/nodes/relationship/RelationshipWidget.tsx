@@ -1,26 +1,25 @@
-import * as React from "react"
-import { DiagramEngine, PortWidget } from "@projectstorm/react-diagrams-core"
-import styled from "@emotion/styled"
+import * as React from "react";
+import { DiagramEngine, PortWidget } from "@projectstorm/react-diagrams-core";
+import styled from "@emotion/styled";
 
-import { RelationshipModel } from "./RelationshipModel"
-import { InlineEdit } from "../../components/inline-edit/InlineEdit"
-import { CirclePort } from "../../components/CirclePort"
-import { RelationshipTrayState } from "../../types"
+import { RelationshipModel } from "./RelationshipModel";
+import { InlineEdit } from "../../components/inline-edit/InlineEdit";
+import { CirclePort } from "../../components/CirclePort";
+import { RelationshipTrayState } from "../../types";
 
 export interface RelationshipProps {
-  node: RelationshipModel
-  engine: DiagramEngine
-  title: string
-  relationshipState: RelationshipTrayState
+  node: RelationshipModel;
+  engine: DiagramEngine;
+  title: string;
+  relationshipState: RelationshipTrayState;
 }
 
 export interface RelationshipState {
-  value: string
+  value: string;
 }
 
 export const RelationshipDiv = styled.div<{ isSelected: boolean }>`
-  box-shadow: ${props =>
-    props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none"};
+  box-shadow: ${props => (props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none")};
   position: relative;
   border: solid 3px #333;
   width: 8rem;
@@ -31,7 +30,7 @@ export const RelationshipDiv = styled.div<{ isSelected: boolean }>`
   position: relative;
   background-color: #fff;
   transform: rotate(45deg);
-`
+`;
 
 const WrapperDiv = styled.div`
   width: 100%;
@@ -41,31 +40,28 @@ const WrapperDiv = styled.div`
   align-items: center;
 
   transform: rotate(-45deg);
-`
+`;
 
-export class Relationship extends React.Component<
-  RelationshipProps,
-  RelationshipState
-> {
+export class Relationship extends React.Component<RelationshipProps, RelationshipState> {
   constructor(props: RelationshipProps & RelationshipState) {
-    super(props)
+    super(props);
 
     this.state = {
       value: this.props.node.getState().value || "Relationship",
-    }
-    this.setState = this.setState.bind(this)
+    };
+    this.setState = this.setState.bind(this);
   }
 
   componentDidUpdate() {
     this.props.node.setState({
       ...this.props.node.getState(),
       value: this.state.value,
-    })
+    });
   }
 
   render() {
     return (
-      <div>
+      <div data-cy="relationship">
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("left")!}
@@ -131,6 +127,6 @@ export class Relationship extends React.Component<
           )}
         </RelationshipDiv>
       </div>
-    )
+    );
   }
 }

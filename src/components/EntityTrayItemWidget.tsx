@@ -68,6 +68,7 @@ export const EntityTrayItemWidget: React.FC<EntityTrayItemWidgetProps> = ({
       !isSelected ? setSelectedDiv(model) : setSelectedDiv(null);
     }}
     style={{ backgroundColor: isSelected && "rgb(0,192,255)" }}
+    data-cy="entity-widget"
   >
     {name}
     <ButtonTray>

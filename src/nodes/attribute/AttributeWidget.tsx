@@ -1,26 +1,25 @@
-import * as React from "react"
-import { DiagramEngine, PortWidget } from "@projectstorm/react-diagrams-core"
-import styled from "@emotion/styled"
+import * as React from "react";
+import { DiagramEngine, PortWidget } from "@projectstorm/react-diagrams-core";
+import styled from "@emotion/styled";
 
-import { AttributeModel } from "./AttributeModel"
-import { InlineEdit } from "../../components/inline-edit/InlineEdit"
-import { CirclePort } from "../../components/CirclePort"
-import { AttributeTrayState } from "../../types"
+import { AttributeModel } from "./AttributeModel";
+import { InlineEdit } from "../../components/inline-edit/InlineEdit";
+import { CirclePort } from "../../components/CirclePort";
+import { AttributeTrayState } from "../../types";
 
 export interface AttributeProps {
-  node: AttributeModel
-  engine: DiagramEngine
-  title: string
-  attributeState: AttributeTrayState
+  node: AttributeModel;
+  engine: DiagramEngine;
+  title: string;
+  attributeState: AttributeTrayState;
 }
 
 export interface AttributeState {
-  value: string
+  value: string;
 }
 
 export const AttributeDiv = styled.div<{ isSelected: boolean }>`
-  box-shadow: ${props =>
-    props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none"};
+  box-shadow: ${props => (props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none")};
   position: relative;
   border: solid 3px #333;
   width: 8rem;
@@ -31,10 +30,9 @@ export const AttributeDiv = styled.div<{ isSelected: boolean }>`
   position: relative;
   background-color: #fff;
   border-radius: 50%;
-`
+`;
 export const DerivedAttributeDiv = styled.div<{ isSelected: boolean }>`
-  box-shadow: ${props =>
-    props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none"};
+  box-shadow: ${props => (props.isSelected ? "0 0 10px rgb(0, 192, 255)" : " none")};
   position: relative;
   border: dashed 3px #333;
   width: 8rem;
@@ -45,7 +43,7 @@ export const DerivedAttributeDiv = styled.div<{ isSelected: boolean }>`
   position: relative;
   background-color: #fff;
   border-radius: 50%;
-`
+`;
 
 const MultipleValueAttributeDiv = styled.div`
   width: 89%;
@@ -55,27 +53,27 @@ const MultipleValueAttributeDiv = styled.div`
   align-items: center;
   border-radius: 50%;
   border: solid 3px #333;
-`
+`;
 
 export class Attribute extends React.Component<AttributeProps, AttributeState> {
   constructor(props: AttributeProps & AttributeState) {
-    super(props)
+    super(props);
     this.state = {
       value: this.props.node.getState().value || "Attribute",
-    }
-    this.setState = this.setState.bind(this)
+    };
+    this.setState = this.setState.bind(this);
   }
 
   componentDidUpdate() {
     this.props.node.setState({
       ...this.props.node.getState(),
       value: this.state.value,
-    })
+    });
   }
 
   render() {
     return (
-      <div>
+      <div data-cy="attribute">
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("left")!}
@@ -129,6 +127,6 @@ export class Attribute extends React.Component<AttributeProps, AttributeState> {
           </AttributeDiv>
         )}
       </div>
-    )
+    );
   }
 }

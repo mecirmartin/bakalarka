@@ -61,7 +61,7 @@ export class Entity extends React.Component<EntityProps, EntityState> {
 
   render() {
     return (
-      <EntityDiv isSelected={this.props.node.isSelected()}>
+      <EntityDiv isSelected={this.props.node.isSelected()} data-cy="entity">
         <PortWidget
           engine={this.props.engine}
           port={this.props.node.getPort("left")!}
