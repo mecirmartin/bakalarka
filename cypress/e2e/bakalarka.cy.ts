@@ -3,7 +3,7 @@ describe("bakalarka", () => {
     cy.visit("http://localhost:3000");
   });
 
-  it("visits localhost", () => {
+  it("visits page", () => {
     cy.visit("http://localhost:3000");
   });
 
@@ -19,13 +19,13 @@ describe("bakalarka", () => {
     cy.get("#demoContainer").click();
     cy.get('[data-cy="relationship"]').should("be.visible");
   });
-  it("creates-entity", () => {
+  it("creates-attribute", () => {
     cy.get('[data-cy="attribute-widget"]').should("be.visible");
     cy.get('[data-cy="attribute-widget"]').first().click("topRight");
     cy.get("#demoContainer").click();
     cy.get('[data-cy="attribute"]').should("be.visible");
   });
-  it("creates-entity", () => {
+  it("creates-generalization", () => {
     cy.get('[data-cy="generalization-widget"]').should("be.visible");
     cy.get('[data-cy="generalization-widget"]').first().click();
     cy.get("#demoContainer").click();
